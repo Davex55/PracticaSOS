@@ -17,14 +17,6 @@ public class Cuenta {
 		this.retiradas_efectivas = new ArrayList<>();
 	}
 	
-	public void realizarTransferencia(int cuentaDestino, double importe, String orden) {
-		this.transferencias.add(new Transferencia(this.id, cuentaDestino, importe, orden));
-	}
-	
-	public void retirarEfectivo(double importe, String orden) {
-		this.retiradas_efectivas.add(new Retirada(this.id, importe, orden));
-	}
-	
 	public int getId() {
 		return id;
 	}
