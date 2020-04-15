@@ -27,6 +27,8 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.naming.NamingContext;
 
+import clase.datos.*;
+
 @Path("/clientes")
 public class ClientesRecursos {
 	
@@ -37,7 +39,7 @@ public class ClientesRecursos {
 	@GET 
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public Response getClientes() {
-		return Response.status(Response.Status.OK).entity("No se pudo crear el garaje").build();
+		return Response.status(Response.Status.OK).entity("hey bro").build();
 	}
 	
 	@GET
@@ -46,8 +48,50 @@ public class ClientesRecursos {
 	public Response getCliente(@PathParam("Cliente_id") int id) {
 		return null;
 	}
+		
+	@POST 
+	@Consumes(MediaType.APPLICATION_XML)
+	public Response addCliente() {
+		return null;
+	}
 	
+	@PUT
+	@Path("{Cliente_id}")
+	@Consumes(MediaType.APPLICATION_XML)
+	public Response updateCliente(@PathParam("Cliente_id") int id) {
+		return null;
+	}
 	
+	@DELETE
+	@Path("{Cliente_id}")
+	public Response deleteCliente(@PathParam("Cliente_id") int id) {
+		return null;
+	}
 	
+	@GET
+	@Path("{Cliente_id}/Cuentas")
+	public Response getCuentasCliente(@PathParam("Cliente_id") int id) {
+		return null;
+	}
+	
+	@GET
+	@Path("{Cliente_id}/Cuentas/{Cuenta_id}")
+	public Response getCuentaCliente(@PathParam("Cliente_id") int id, @PathParam("Cuenta_id") int id_cuenta) {
+		return null;
+	}
+		
+	@GET
+	@Path("{Cliente_id}/Retiradas")
+	@Produces(MediaType.APPLICATION_XML)
+	public Response getRetiradasCliente(@PathParam("Cliente_id") int id) {
+		return null;
+	}
+	
+	@GET
+	@Path("{Cliente_id}/RetiradasTransferencias")
+	@Produces(MediaType.APPLICATION_XML)
+	public Response getRetiradasTransferenciasCliente(@PathParam("Cliente_id") int id) {
+		return null;
+	}
 	
 }

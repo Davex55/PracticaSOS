@@ -1,20 +1,38 @@
 package clase.datos;
 
-import java.util.ArrayList;
+import java.net.MalformedURLException;
+import java.net.URL;
+import javax.xml.bind.annotation.XmlAttribute;
 
 public class Clientes {
+
+	private URL url;
+	private double saldo;
 	
-	private ArrayList<ListaClientes> clientes;
-	
-	public Clientes() {
-		this.clientes = new ArrayList<ListaClientes>();		
+	@XmlAttribute(name="herf")
+	public URL getUrl() {
+		return url;
 	}
 
-	public ArrayList<ListaClientes> getClientes() {
-		return clientes;
+	public void setUrl(URL url) {
+		this.url = url;
 	}
 
-	public void setClientes(ArrayList<ListaClientes> clientes) {
-		this.clientes = clientes;
+	@XmlAttribute
+	public double getSaldo() {
+		return saldo;
+	}
+
+	public void setSaldo(double saldo) {
+		this.saldo = saldo;
+	}
+
+	public Clientes(String url, double saldo) {
+		try {
+			this.url = new URL(url);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		this.saldo = saldo;
 	}
 }
