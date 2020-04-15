@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS `BANCO`.`Clientes` (
   `idClientes` INT NOT NULL AUTO_INCREMENT,
   `Nombre` VARCHAR(45) NOT NULL,
   `DNI` VARCHAR(10) NOT NULL,
-  `Teléfono` VARCHAR(15) NOT NULL,
+  `Telefono` VARCHAR(15) NOT NULL,
   `Direccion` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`idClientes`))
 ENGINE = InnoDB;
@@ -54,7 +54,7 @@ DROP TABLE IF EXISTS `BANCO`.`TipoTransf` ;
 
 CREATE TABLE IF NOT EXISTS `BANCO`.`TipoTransf` (
   `idTipoTransf` INT NOT NULL AUTO_INCREMENT,
-  `Descripción` VARCHAR(45) NOT NULL,
+  `Descripcion` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`idTipoTransf`))
 ENGINE = InnoDB;
 
@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS `BANCO`.`Transacciones` (
   `Importe` DOUBLE NOT NULL,
   `IDCuenta` INT NULL,
   `IDTipoTransf` INT NULL,
-  `Fecha` TIMESTAMP NOT NULL,
+  `Fecha` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idTransacciones`),
   INDEX `IDCuenta_idx` (`IDCuenta` ASC),
   INDEX `IDTipoTransf_idx` (`IDTipoTransf` ASC),
@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS `BANCO`.`Transacciones` (
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
-INSERT INTO TipoTransf (idTipoTransf, Descripción)
+INSERT INTO TipoTransf (idTipoTransf, Descripcion)
 	VALUES 
 		(1,'Transferencia'),
 		(2,'Retirada');

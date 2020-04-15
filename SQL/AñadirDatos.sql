@@ -1,11 +1,11 @@
 USE BANCO;
 
-INSERT INTO Clientes (nombre, dirección, dni) 
+INSERT INTO Clientes (Nombre, DNI, Telefono, Direccion) 
 VALUES 
-('pepe', 'calle' '101010101v'),
-('bro', 'avenida', '101010101v'),
-('patato', 'plaza', '12345678V'),
-('alejandro', 'calle mindungui', '12323445W');
+('pepe', '101010101v', '666666666', 'calle'),
+('bro', '101010101v', '77777777','avenida'),
+('patato', '12345678V', '666555666', 'plaza'),
+('alejandro', '12345645W', '789456123','calle mindungui');
 
 
 INSERT INTO Cuentas (Balance, IDCliente) 
@@ -20,6 +20,13 @@ VALUES
 (200,2);
 
 
--- INSERT INTO Transacciones (Importe, IDCuenta, IDTipoTransf, Fecha)
--- VALUES 
--- (500,2,1,
+INSERT INTO Transacciones (Importe, IDCuenta, IDTipoTransf)
+VALUES 
+(500,2,1),
+(1000,1,1),
+(10000,3,1),
+(10,4,2),
+(20,4,2),
+(40,6,2),
+(500,7,2),
+(100,8,2);
