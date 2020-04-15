@@ -44,7 +44,7 @@ public class ClientesRecursos {
 			ctx = new InitialContext();
 			NamingContext envCtx = (NamingContext) ctx.lookup("java:comp/env");
 
-			ds = (DataSource) envCtx.lookup("jdbc/GarajesyEmpleados");
+			ds = (DataSource) envCtx.lookup("jdbc/BANCO");
 			conn = ds.getConnection();
 		} catch (NamingException e) {
 			e.printStackTrace();
