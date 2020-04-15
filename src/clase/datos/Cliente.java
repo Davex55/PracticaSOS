@@ -8,12 +8,15 @@ public class Cliente {
 	private int id;
 	private String nombre;
 	private String dni;
-	private Date fecha;
+	private String telefono;
 	private String direccion;
-	private ArrayList <Cuenta> cuentas;
 	
-	public Cliente() {
-		this.cuentas = new ArrayList<>();
+	public Cliente(int id, String nombre, String dni, String telefono, String direccion) {
+		this.id = id;
+		this.nombre = nombre;
+		this.dni = dni;
+		this.telefono = telefono;
+		this.direccion = direccion;
 	}
 
 	public int getId() {
@@ -40,12 +43,12 @@ public class Cliente {
 		this.dni = dni;
 	}
 
-	public Date getFecha() {
-		return fecha;
+	public String getFecha() {
+		return this.telefono;
 	}
 
-	public void setFecha(Date fecha) {
-		this.fecha = fecha;
+	public void setFecha(String telefono) {
+		this.telefono = telefono;
 	}
 
 	public String getDireccion() {
@@ -54,13 +57,5 @@ public class Cliente {
 
 	public void setDireccion(String direccion) {
 		this.direccion = direccion;
-	}
-
-	public ArrayList<Cuenta> getCuentas() {
-		return cuentas;
-	}
-
-	public void setCuentas(ArrayList<Cuenta> cuentas) {
-		this.cuentas = cuentas;
 	}
 }
