@@ -1,15 +1,15 @@
 package clase.datos;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public class Retirada {
 	
+	private int orden;
 	private int cuenta;
 	private double importe;
-	private String orden;
-	
-	public Retirada(int cuenta, double importe, String orden) {
-		this.cuenta = cuenta;
-		this.importe = importe;
-		this.orden = orden;
+		
+	public Retirada() {
 	}
 
 	public int getCuenta() {
@@ -28,12 +28,17 @@ public class Retirada {
 		this.importe = importe;
 	}
 
-	public String getOrden() {
+	public int getOrden() {
 		return orden;
 	}
 
-	public void setOrden(String orden) {
+	public void setOrden(int orden) {
 		this.orden = orden;
 	}
-
+	
+	public void retiradaFromRS(ResultSet rs) throws SQLException {
+		this.setOrden(rs.getInt("Orden"));
+		this.setCuenta(rs.getInt("Cuenta"));
+		this.setImporte(rs.getDouble("importe"));
+	}
 }

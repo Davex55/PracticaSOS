@@ -1,8 +1,14 @@
 package clase.datos;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name = "cliente")
 public class Cliente {
 
 	private int id;
@@ -11,14 +17,10 @@ public class Cliente {
 	private String telefono;
 	private String direccion;
 	
-	public Cliente(int id, String nombre, String dni, String telefono, String direccion) {
-		this.id = id;
-		this.nombre = nombre;
-		this.dni = dni;
-		this.telefono = telefono;
-		this.direccion = direccion;
+	public Cliente() {
 	}
 
+	@XmlAttribute(required=false)
 	public int getId() {
 		return id;
 	}
@@ -43,11 +45,11 @@ public class Cliente {
 		this.dni = dni;
 	}
 
-	public String getFecha() {
+	public String getTelefono() {
 		return this.telefono;
 	}
 
-	public void setFecha(String telefono) {
+	public void setTelefono(String telefono) {
 		this.telefono = telefono;
 	}
 
@@ -57,5 +59,13 @@ public class Cliente {
 
 	public void setDireccion(String direccion) {
 		this.direccion = direccion;
+	}
+	
+	public void clienteFromRS(ResultSet rs) throws SQLException {
+		this.setId(rs.getInt("idClientes"));
+		this.setNombre(rs.getString("Nombre"));
+		this.setDni(rs.getString("DNI"));
+		this.setTelefono(rs.getString("Telefono"));
+		this.setDireccion(rs.getString("Direccion"));
 	}
 }
