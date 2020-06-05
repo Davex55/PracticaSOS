@@ -63,9 +63,10 @@ public class ClientesRecursos {
 			ListaClientes lista = new ListaClientes();
 			rs.beforeFirst();
 			while (rs.next()) {
-				lista.addListaCliente(new Clientes(uriInfo.getAbsolutePath() + "/" + rs.getInt("idClientes"),15));
+				lista.addListaCliente(new Clientes(uriInfo.getAbsolutePath() + "/" + rs.getInt("idClientes"), 15));
 			}
-			return Response.status(Response.Status.OK).entity(lista).build(); // No se puede devolver el ArrayList (para generar XML)
+			return Response.status(Response.Status.OK).entity(lista).build(); // No se puede devolver el ArrayList (para
+																				// generar XML)
 		} catch (NumberFormatException e) {
 			return Response.status(Response.Status.BAD_REQUEST).entity("No se pudieron convertir los índices a números")
 					.build();
@@ -95,7 +96,7 @@ public class ClientesRecursos {
 			return Response.status(Response.Status.BAD_REQUEST).entity("No puedo parsear a entero").build();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error de acceso a BBDD").build();			
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error de acceso a BBDD").build();
 		}
 	}
 
@@ -107,7 +108,7 @@ public class ClientesRecursos {
 					+ cliente.getNombre() + "', '" + cliente.getDni() + "', '" + cliente.getTelefono() + "', '"
 					+ cliente.getDireccion() + "');";
 			PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-			ps.executeUpdate();
+			ps.execute	º();
 			ResultSet generatedID = ps.getGeneratedKeys();
 			if (generatedID.next()) {
 				cliente.setId(generatedID.getInt(1));
@@ -141,7 +142,9 @@ public class ClientesRecursos {
 			cliente.setTelefono(nuevo_cliente.getTelefono());
 			cliente.setDireccion(nuevo_cliente.getDireccion());
 
-			sql = "";
+			sql = "UPDATE BANCO.Clientes SET Nombre='" + cliente.getNombre() + "', DNI='" + cliente.getDni()
+					+ "', Telefono='" + cliente.getTelefono() + "', Direccion='" + cliente.getDireccion()
+					+ "' WHERE idClientes=" + int_id + " ;";
 			ps = conn.prepareStatement(sql);
 			ps.executeUpdate();
 			String location = uriInfo.getAbsolutePath() + "/" + cliente.getId();
@@ -159,7 +162,7 @@ public class ClientesRecursos {
 	public Response deleteCliente(@PathParam("Cliente_id") String id) {
 		try {
 			int int_id = Integer.parseInt(id);
-			String sql = "" + int_id + ";";
+			String sql = "DELETE FROM BANCO.Clientes WHERE idClientes =" + int_id + ";";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			int affectedRows = ps.executeUpdate();
 			if (affectedRows == 1)
@@ -178,7 +181,7 @@ public class ClientesRecursos {
 	@Path("{Cliente_id}/cuentas")
 	public Response getCuentasCliente(@PathParam("Cliente_id") int id) {
 		try {
-			String sql = "SELECT * FROM BANCO.Cuentas WHERE IDCliente= "+ id + ";";
+			String sql = "SELECT * FROM BANCO.Cuentas WHERE IDCliente= " + id + ";";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			ListaCuentas lista = new ListaCuentas();
@@ -188,7 +191,8 @@ public class ClientesRecursos {
 				cuenta.cuentaFromRS(rs);
 				lista.addListaCuenta(cuenta);
 			}
-			return Response.status(Response.Status.OK).entity(lista).build(); // No se puede devolver el ArrayList (para generar XML)
+			return Response.status(Response.Status.OK).entity(lista).build(); // No se puede devolver el ArrayList (para
+																				// generar XML)
 		} catch (NumberFormatException e) {
 			return Response.status(Response.Status.BAD_REQUEST).entity("No se pudieron convertir los índices a números")
 					.build();
@@ -197,7 +201,7 @@ public class ClientesRecursos {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error de acceso a BBDD").build();
 		}
 	}
-	
+
 	@GET
 	@Path("{Cliente_id}/retiradas")
 	@Produces(MediaType.APPLICATION_XML)
@@ -213,7 +217,8 @@ public class ClientesRecursos {
 				retirada.retiradaFromRS(rs);
 				lista.addListaRetirada(retirada);
 			}
-			return Response.status(Response.Status.OK).entity(lista).build(); // No se puede devolver el ArrayList (para generar XML)
+			return Response.status(Response.Status.OK).entity(lista).build(); // No se puede devolver el ArrayList (para
+																				// generar XML)
 		} catch (NumberFormatException e) {
 			return Response.status(Response.Status.BAD_REQUEST).entity("No se pudieron convertir los índices a números")
 					.build();
@@ -228,5 +233,5 @@ public class ClientesRecursos {
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getRetiradasTransferenciasCliente(@PathParam("Cliente_id") int id) {
 		return null;
-	}	
+	}
 }

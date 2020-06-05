@@ -49,20 +49,22 @@ public class RetiradasRecursos {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getRetiradas() {
 		return null;
 	}
-	
+
 	@GET
 	@Path("{Retirada_id}")
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getRetirada(@PathParam("Retirada_id") String id) {
 		try {
-			int int_id = Integer.parseInt(id);			
-			String sql = "";
+			int int_id = Integer.parseInt(id);
+			int tipoTransf = 2;
+			String sql = "SELECT idTransacciones, Importe, IDCuenta, Fecha FROM BANCO.Transacciones WHERE idTransacciones = "
+					+ int_id + " AND IDTipoTransf = " + tipoTransf + " ;";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
@@ -78,12 +80,13 @@ public class RetiradasRecursos {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error de acceso a BBDD").build();
 		}
 	}
-	
+
 	@POST
 	@Consumes(MediaType.APPLICATION_XML)
 	public Response addRetirada(Retirada retirada) {
 		try {
-			String sql = "";
+
+			String sql = "INSERT INTO Banco.Transacciones (Importe, IDCuenta, IDTipoTransf)";
 			PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			ps.executeUpdate();
 			ResultSet generatedID = ps.getGeneratedKeys();
@@ -92,9 +95,12 @@ public class RetiradasRecursos {
 				String location = uriInfo.getAbsolutePath() + "/" + retirada.getOrden();
 				return Response.status(Response.Status.CREATED).entity(retirada).header("Location", location)
 						.header("Content-Location", location).build();
-			}	
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error de acceso a BBDD").build();						
-		}catch(SQLException e) {
+			}
+			sql = "UPDATE BANCO.Cuentas SET Balance = (Balance - " + retirada.getImporte() + ") WHERE idCuentas = "
+					+ retirada.getCuenta() + ";";
+
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error de acceso a BBDD").build();
+		} catch (SQLException e) {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error de acceso a BBDD").build();
 		}
 	}

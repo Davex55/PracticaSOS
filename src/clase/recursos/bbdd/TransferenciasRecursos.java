@@ -35,6 +35,8 @@ public class TransferenciasRecursos {
 	private DataSource ds;
 	private Connection conn;
 
+	private int tipoTransf = 1; // 1->transferencia
+
 	public TransferenciasRecursos() {
 		InitialContext ctx;
 		try {
@@ -49,21 +51,21 @@ public class TransferenciasRecursos {
 			e.printStackTrace();
 		}
 	}
-	
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getTransferencias() {
 		return null;
 	}
-	
+
 	@GET
 	@Path("{Transferencia_id}")
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getTransferencia(@PathParam("Transferencia_id") String id) {
 		try {
 			int int_id = Integer.parseInt(id);
-			String sql = "";
+			String sql = "SELECT idTransacciones, Importe, IDCuenta, Fecha FROM BANCO.Transacciones WHERE idTransacciones = "
+					+ int_id + " AND IDTipoTransf = " + tipoTransf + " ;";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
@@ -84,8 +86,32 @@ public class TransferenciasRecursos {
 	@Consumes(MediaType.APPLICATION_XML)
 	public Response addTransferencia(Transferencia transferencia) {
 		try {
-			String sql = "";
-			PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			int origen = transferencia.getCuentaOrigen();
+			int destino = transferencia.getCuentaDestino();
+			double importe = transferencia.getImporte();
+			Cuenta cuentaOr = new Cuenta();
+			Cuenta cuentaDest = new Cuenta();
+			String sql = "SELECT * FROM BANCO.Cuentas WHERE idCuentas = " + origen;
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				cuentaOr.cuentaFromRS(rs);
+			} else {
+				return Response.status(Response.Status.NOT_FOUND).entity("Elemento no encontrado").build();
+			}
+			
+			if (cuentaOr.getSaldo() > importe) {
+				sql = "INSERT INTO BANCO.Transacciones (Importe, IDCuenta, IDTipoTransf, IDCuentaDest) VALUES "
+						+ importe + ", " + origen + ", " + tipoTransf + ", " + destino + ";";
+				double balanceOrFin = cuentaOr.getSaldo() - importe;
+				sql = "UPDATE BANCO.Cuentas SET Balance = " + balanceOrFin + "WHERE idCuentas = " + cuentaOr.getId()
+						+ ";";
+				sql = "UPDATE BANCO.Cuentas SET Balance = (balance + " + importe + ") WHERE idCuentas = " + cuentaDest.getId()
+				+ ";";
+			} else {
+
+			}
+			ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			ps.executeUpdate();
 			ResultSet generatedID = ps.getGeneratedKeys();
 			if (generatedID.next()) {
@@ -93,9 +119,9 @@ public class TransferenciasRecursos {
 				String location = uriInfo.getAbsolutePath() + "/" + transferencia.getOrden();
 				return Response.status(Response.Status.CREATED).entity(transferencia).header("Location", location)
 						.header("Content-Location", location).build();
-			}	
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error de acceso a BBDD").build();						
-		}catch(SQLException e) {
+			}
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error de acceso a BBDD").build();
+		} catch (SQLException e) {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error de acceso a BBDD").build();
 		}
 	}
@@ -105,7 +131,8 @@ public class TransferenciasRecursos {
 	public Response deleteTransferenciasCuenta(@PathParam("Transferencia_id") String Transferencia_id) {
 		try {
 			int int_id = Integer.parseInt(Transferencia_id);
-			String sql = "";
+			String sql = "DELETE FROM BANCO.Transacciones WHERE idTransacciones = " + int_id + " AND IDTripoTransf = "
+					+ tipoTransf + " ;";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			int affectedRows = ps.executeUpdate();
 			if (affectedRows == 1)
