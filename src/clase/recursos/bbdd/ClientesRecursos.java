@@ -32,6 +32,7 @@ import clase.datos.*;
 @Path("/clientes")
 public class ClientesRecursos {
 
+	
 	@Context
 	private UriInfo uriInfo;
 
@@ -53,6 +54,11 @@ public class ClientesRecursos {
 		}
 	}
 
+	/**
+	 * getClientes/0 
+	 * Devuelve la lista de clientes con su Url y su saldo
+	 * @return XML de tipo ListaClientes 
+	 */
 	@GET
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Response getClientes() {
@@ -76,6 +82,12 @@ public class ClientesRecursos {
 		}
 	}
 
+	/**
+	 * getCliente/1
+	 * Devuelve el cliente con el id de {Cliente_id}
+	 * @param id
+	 * @return XML de tipo Cliente
+	 */
 	@GET
 	@Path("{Cliente_id}")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -100,15 +112,21 @@ public class ClientesRecursos {
 		}
 	}
 
+	/**
+	 * addCliente/1 
+	 * Crea un nuevo cliente en la bbdd utilizando el objeto clientes que se le pasa como arg1
+	 * @param cliente
+	 * @return Response con la Url del nuevo recurso creado
+	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_XML)
 	public Response addCliente(Cliente cliente) {
 		try {
-			String sql = "INSERT INTO BANCO.Clientes ('Nombre', 'DNI', 'Telefono', 'Direccion') VALUES ('"
+			String sql = "INSERT INTO BANCO.Clientes (Nombre, DNI, Telefono, Direccion) VALUES ('"
 					+ cliente.getNombre() + "', '" + cliente.getDni() + "', '" + cliente.getTelefono() + "', '"
 					+ cliente.getDireccion() + "');";
 			PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-			ps.execute();
+			ps.executeUpdate();
 			ResultSet generatedID = ps.getGeneratedKeys();
 			if (generatedID.next()) {
 				cliente.setId(generatedID.getInt(1));
@@ -122,6 +140,13 @@ public class ClientesRecursos {
 		}
 	}
 
+	/**
+	 * updateCliente/2
+	 * Actualiza un cliente con el id {Cliente_id}(arg1) de la bbdd con los atributos del objeto nuevo_cliente(arg2)
+	 * @param id
+	 * @param nuevo_cliente
+	 * @return Response
+	 */
 	@PUT
 	@Path("{Cliente_id}")
 	@Consumes(MediaType.APPLICATION_XML)
@@ -157,6 +182,12 @@ public class ClientesRecursos {
 		}
 	}
 
+	/**
+	 * deleteCliente/1
+	 * Elimina el cliente con el id {Cliente_id} de la bbdd
+	 * @param id
+	 * @return Response
+	 */
 	@DELETE
 	@Path("{Cliente_id}")
 	public Response deleteCliente(@PathParam("Cliente_id") String id) {
@@ -177,6 +208,12 @@ public class ClientesRecursos {
 		}
 	}
 
+	/**
+	 * getCuentasCliente/1
+	 * Devuelve las cuentas del cliente con el id {Cliente_id}
+	 * @param id
+	 * @return XML de tipo ListaCuentas
+	 */
 	@GET
 	@Path("{Cliente_id}/cuentas")
 	public Response getCuentasCliente(@PathParam("Cliente_id") int id) {
@@ -202,6 +239,12 @@ public class ClientesRecursos {
 		}
 	}
 
+	/**
+	 * getRetiradasCliente/1
+	 * Devuelve las retiradas de un cliente cuyo id es {Clientes_id} 
+	 * @param id
+	 * @return XML tipo ListaRetiradas
+	 */
 	@GET
 	@Path("{Cliente_id}/retiradas")
 	@Produces(MediaType.APPLICATION_XML)
@@ -228,6 +271,12 @@ public class ClientesRecursos {
 		}
 	}
 
+	/**
+	 * getRetiradasTransferenciasCliente/1
+	 * Devuelve todas la retiradas y transferencias de el cliente con id {Cliente_id}
+	 * @param id
+	 * @return XML tipo ListaRetiradas y ListaTransferencias
+	 */
 	@GET
 	@Path("{Cliente_id}/retiradasTransferencias")
 	@Produces(MediaType.APPLICATION_XML)
