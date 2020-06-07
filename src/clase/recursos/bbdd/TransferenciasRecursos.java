@@ -58,6 +58,12 @@ public class TransferenciasRecursos {
 		return null;
 	}
 
+	/**
+	 * getTransferencia/1
+	 * Devuelve la transferencia con el id {Transferencia_id}
+	 * @param id
+	 * @return XML de tipo Transferencia
+	 */
 	@GET
 	@Path("{Transferencia_id}")
 	@Produces(MediaType.APPLICATION_XML)
@@ -82,6 +88,12 @@ public class TransferenciasRecursos {
 		}
 	}
 
+	/**
+	 * addTransferencia/1
+	 * Crea una transferencia en la bbdd
+	 * @param transferencia
+	 * @return con la Url del recurso
+	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_XML)
 	public Response addTransferencia(Transferencia transferencia) {
@@ -101,15 +113,23 @@ public class TransferenciasRecursos {
 			}
 			
 			if (cuentaOr.getSaldo() > importe) {
-				sql = "INSERT INTO BANCO.Transacciones (Importe, IDCuenta, IDTipoTransf, IDCuentaDest) VALUES "
-						+ importe + ", " + origen + ", " + tipoTransf + ", " + destino + ";";
+				// Se calcula el saldo final 
 				double balanceOrFin = cuentaOr.getSaldo() - importe;
+				// Actualiza el Saldo de la cuesta origen
 				sql = "UPDATE BANCO.Cuentas SET Balance = " + balanceOrFin + "WHERE idCuentas = " + cuentaOr.getId()
 						+ ";";
+				ps = conn.prepareStatement(sql);
+				ps.executeUpdate();
+				// Actualiza el saldo de la cuenta destino
 				sql = "UPDATE BANCO.Cuentas SET Balance = (balance + " + importe + ") WHERE idCuentas = " + cuentaDest.getId()
 				+ ";";
+				ps = conn.prepareStatement(sql);
+				ps.executeUpdate();
+				// Se crea una nueva transferencia en el recurso /api/transferencia
+				sql = "INSERT INTO BANCO.Transacciones (Importe, IDCuenta, IDTipoTransf, IDCuentaDest) VALUES "
+						+ importe + ", " + origen + ", " + tipoTransf + ", " + destino + ";";				
 			} else {
-
+				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("No se puede realizar la transaccion").build();
 			}
 			ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			ps.executeUpdate();
@@ -126,6 +146,12 @@ public class TransferenciasRecursos {
 		}
 	}
 
+	/**
+	 * deleteTransferenciasCuenta/1
+	 * Elimina la transferencia con el id {Transferencia_id}
+	 * @param Transferencia_id
+	 * @return Response
+	 */
 	@DELETE
 	@Path("{Transferencia_id}")
 	public Response deleteTransferenciasCuenta(@PathParam("Transferencia_id") String Transferencia_id) {

@@ -55,6 +55,11 @@ public class CuentasRecursos {
 		}
 	}
 
+	/**
+	 * getCuentas/0
+	 * Devuelve todas las cuentas
+	 * @return XML de tipo ListaCuentas
+	 */
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getCuentas() {
@@ -78,6 +83,12 @@ public class CuentasRecursos {
 		}
 	}
 
+	/**
+	 * getCuenta/1
+	 * Devuelve la cuenta con el id {Cuenta_id}
+	 * @param id
+	 * @return XML de tipo Cuenta
+	 */
 	@GET
 	@Path("{Cuenta_id}")
 	@Produces(MediaType.APPLICATION_XML)
@@ -103,6 +114,12 @@ public class CuentasRecursos {
 
 	}
 
+	/**
+	 * addCuenta/1
+	 * Crea una cuenta nueva en la bbdd
+	 * @param cuenta
+	 * @return Response con la Url del recurso
+	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_XML)
 	public Response addCuenta(Cuenta cuenta) {
@@ -125,6 +142,13 @@ public class CuentasRecursos {
 		}
 	}
 
+	/**
+	 * updateCuenta/2
+	 * Actualiza una cuenta con el id {Cuenta_id}(arg1) de la bbdd con los atributos del objeto nueva_cuenta(arg2)
+	 * @param id
+	 * @param nueva_cuenta
+	 * @return Response
+	 */
 	@PUT
 	@Path("{Cuenta_id}")
 	@Produces(MediaType.APPLICATION_XML)
@@ -158,6 +182,12 @@ public class CuentasRecursos {
 		}
 	}
 
+	/**
+	 * deleteCuenta/1
+	 * Elimina una cuenta con el id {Cuenta_id}
+	 * @param id
+	 * @return Response
+	 */
 	@DELETE
 	@Path("{Cuenta_id}")
 	public Response deleteCuenta(@PathParam("Cuenta_id") String id) {
@@ -187,6 +217,12 @@ public class CuentasRecursos {
 		}
 	}
 
+	/**
+	 * getRetiradasCuenta/1
+	 * Devuelve todas las retiradas de la cuenta con id {Cuenta_id}
+	 * @param id
+	 * @return XML de tipo ListaRetiradas
+	 */
 	@GET
 	@Path("{Cuenta_id}/Retiradas")
 	@Produces(MediaType.APPLICATION_XML)
@@ -216,6 +252,12 @@ public class CuentasRecursos {
 		}
 	}
 
+	/**
+	 * getTransferenciasCuenta/1
+	 * Devuelve todas las transferencias de la cuenta con id {Cuenta_id}
+	 * @param id
+	 * @return XML de tipo ListaTransferencias
+	 */
 	@GET
 	@Path("{Cuenta_id}/Transferencias")
 	@Produces(MediaType.APPLICATION_XML)

@@ -56,6 +56,12 @@ public class RetiradasRecursos {
 		return null;
 	}
 
+	/**
+	 * getRetirada/1
+	 * Devuelve la retirada con el id {Retirada_id}
+	 * @param id
+	 * @return XML de tipo Retirada
+	 */
 	@GET
 	@Path("{Retirada_id}")
 	@Produces(MediaType.APPLICATION_XML)
@@ -81,6 +87,12 @@ public class RetiradasRecursos {
 		}
 	}
 
+	/**
+	 * addRetirada/1
+	 * Crea una retirada en la bbdd
+	 * @param retirada
+	 * @return Response con la Url del recurso
+	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_XML)
 	public Response addRetirada(Retirada retirada) {
