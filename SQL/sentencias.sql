@@ -53,7 +53,7 @@ DROP TABLE IF EXISTS `BANCO`.`TipoTransf` ;
 
 CREATE TABLE IF NOT EXISTS `BANCO`.`TipoTransf` (
   `idTipoTransf` INT NOT NULL AUTO_INCREMENT,
-  `Descripción` VARCHAR(45) NOT NULL,
+  `Descripcion` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`idTipoTransf`))
 ENGINE = InnoDB;
 
