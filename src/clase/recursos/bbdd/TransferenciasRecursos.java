@@ -92,7 +92,7 @@ public class TransferenciasRecursos {
 	 * addTransferencia/1
 	 * Crea una transferencia en la bbdd
 	 * @param transferencia
-	 * @return con la Url del recurso
+	 * @return Response con la Url del recurso
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_XML)
