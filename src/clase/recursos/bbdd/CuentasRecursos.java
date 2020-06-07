@@ -194,7 +194,6 @@ public class CuentasRecursos {
 		try {
 			int int_id = Integer.parseInt(id);
 			int tipoTransf = 2; // 2->Retirada
-			// String sql = "SELECT * FROM BANCO.Cuentas WHERE IDCliente= " + id + ";";
 			String sql = "SELECT idTransacciones, Importe, IDCuenta, Fecha FROM BANCO.Transacciones WHERE IDCuenta = "
 					+ int_id + " AND IDTipoTransf = " + tipoTransf + " ;";
 			PreparedStatement ps = conn.prepareStatement(sql);
@@ -223,7 +222,6 @@ public class CuentasRecursos {
 		try {
 			int int_id = Integer.parseInt(id);
 			int tipoTransf = 1; // 1->Transferencia
-			// String sql = "SELECT * FROM BANCO.Cuentas WHERE IDCliente= " + id + ";";
 			String sql = "SELECT idTransacciones, Importe, IDCuenta, Fecha FROM BANCO.Transacciones WHERE IDCuenta = "
 					+ int_id + " AND IDTipoTransf = " + tipoTransf + " ;";
 			PreparedStatement ps = conn.prepareStatement(sql);

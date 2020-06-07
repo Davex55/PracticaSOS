@@ -98,6 +98,11 @@ public class RetiradasRecursos {
 			}
 			sql = "UPDATE BANCO.Cuentas SET Balance = (Balance - " + retirada.getImporte() + ") WHERE idCuentas = "
 					+ retirada.getCuenta() + ";";
+			ps = conn.prepareStatement(sql);
+			ps.executeUpdate();
+//			String location = uriInfo.getAbsolutePath() + "/" + cuenta.getId();
+//			return Response.status(Response.Status.CREATED).entity(cuenta).header("Location", location)
+//					.header("Content-Location", location).build();
 
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error de acceso a BBDD").build();
 		} catch (SQLException e) {

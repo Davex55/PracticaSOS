@@ -108,7 +108,7 @@ public class ClientesRecursos {
 					+ cliente.getNombre() + "', '" + cliente.getDni() + "', '" + cliente.getTelefono() + "', '"
 					+ cliente.getDireccion() + "');";
 			PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-			ps.execute	º();
+			ps.execute();
 			ResultSet generatedID = ps.getGeneratedKeys();
 			if (generatedID.next()) {
 				cliente.setId(generatedID.getInt(1));
