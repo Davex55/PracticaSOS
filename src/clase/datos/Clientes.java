@@ -35,4 +35,6 @@ public class Clientes {
 		}
 		this.saldo = saldo;
 	}
+	
+	public Clientes() {}
 }
