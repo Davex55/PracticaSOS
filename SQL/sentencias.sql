@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS `BANCO`.`Clientes` (
   `Nombre` VARCHAR(45) NOT NULL,
   `Direccion` VARCHAR(100) NOT NULL,
   `DNI` VARCHAR(10) NOT NULL,
-  `Teléfono` VARCHAR(15) NULL,
+  `Telefono` VARCHAR(15) NULL,
   PRIMARY KEY (`idClientes`),
   UNIQUE INDEX `DNI_UNIQUE` (`DNI` ASC))
 ENGINE = InnoDB;
@@ -90,6 +90,11 @@ CREATE TABLE IF NOT EXISTS `BANCO`.`Transacciones` (
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
+
+INSERT INTO TipoTransf (idTipoTransf, Descripcion)
+	VALUES 
+			(1, 'Transferencia'),
+			(2, 'Retirada');
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
