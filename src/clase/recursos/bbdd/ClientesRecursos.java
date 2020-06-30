@@ -250,7 +250,7 @@ public class ClientesRecursos {
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getRetiradasCliente(@PathParam("Cliente_id") int id) {
 		try {
-			String sql = "SELECT * FROM BANCO.Cuentas WHERE IDCliente= " + id + ";";
+			String sql = "SELECT * FROM BANCO.Transacciones WHERE IDCliente= " + id + " AND ;";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			ListaRetiradas lista = new ListaRetiradas();

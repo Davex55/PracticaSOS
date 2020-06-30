@@ -2,7 +2,7 @@ USE BANCO;
 
 INSERT INTO Clientes (Nombre, DNI, Telefono, Direccion) 
 VALUES 
-('pepe', '101010101v', '666666666', 'calle'),
+('pepe', '101010102v', '666666666', 'calle'),
 ('bro', '101010101v', '77777777','avenida'),
 ('patato', '12345678V', '666555666', 'plaza'),
 ('alejandro', '12345645W', '789456123','calle mindungui');
