@@ -233,9 +233,8 @@ public class CuentasRecursos {
 	public Response getRetiradasCuenta(@PathParam("Cuenta_id") String id) {
 		try {
 			int int_id = Integer.parseInt(id);
-			int tipoTransf = 2; // 2->Retirada
-			String sql = "SELECT idTransacciones, Importe, IDCuenta, Fecha FROM BANCO.Transacciones WHERE IDCuenta = "
-					+ int_id + " AND IDTipoTransf = " + tipoTransf + " ;";
+			//int tipoTransf = 2; // 2->Retirada
+			String sql = "SELECT * FROM BANCO.Transacciones WHERE IDCuenta =" + int_id + " AND IDTipoTransf = 2;";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			ListaRetiradas lista = new ListaRetiradas();
@@ -255,6 +254,7 @@ public class CuentasRecursos {
 		}
 	}
 
+	//NECESARIO
 	/**
 	 * getTransferenciasCuenta/1
 	 * Devuelve todas las transferencias de la cuenta con id {Cuenta_id}
@@ -267,9 +267,8 @@ public class CuentasRecursos {
 	public Response getTransferenciasCuenta(@PathParam("Cuenta_id") String id) {
 		try {
 			int int_id = Integer.parseInt(id);
-			int tipoTransf = 1; // 1->Transferencia
-			String sql = "SELECT idTransacciones, Importe, IDCuenta, Fecha FROM BANCO.Transacciones WHERE IDCuenta = "
-					+ int_id + " AND IDTipoTransf = " + tipoTransf + " ;";
+			//int tipoTransf = 1; // 1->Transferencia
+			String sql = "SELECT * FROM BANCO.Transacciones WHERE IDCuenta =" + int_id + " AND IDTipoTransf = 1;";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			ListaTransferencias lista = new ListaTransferencias();

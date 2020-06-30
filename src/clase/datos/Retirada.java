@@ -9,41 +9,41 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "retirada")
 public class Retirada {
 	
-	private int orden;
-	private int cuenta;
-	private double importe;
-		
+	private int idTransacciones;
+	private int IDCuenta;
+	private double Importe;
+			
 	public Retirada() {
 	}
 
 	@XmlAttribute(required=false)
-	public int getOrden() {
-		return orden;
+	public int getidTransacciones() {
+		return idTransacciones;
 	}
 	
-	public int getCuenta() {
-		return cuenta;
+	public void setidTransacciones(int idTransacciones) {
+		this.idTransacciones = idTransacciones;
+	}
+	
+	public int getIDCuenta() {
+		return IDCuenta;
 	}
 
-	public void setCuenta(int cuenta) {
-		this.cuenta = cuenta;
+	public void setIDCuenta(int IDCuenta) {
+		this.IDCuenta = IDCuenta;
 	}
 
 	public double getImporte() {
-		return importe;
+		return Importe;
 	}
 
-	public void setImporte(double importe) {
-		this.importe = importe;
-	}
-	
-	public void setOrden(int orden) {
-		this.orden = orden;
+	public void setImporte(double Importe) {
+		this.Importe = Importe;
 	}
 	
 	public void retiradaFromRS(ResultSet rs) throws SQLException {
-		this.setOrden(rs.getInt("Orden"));
-		this.setCuenta(rs.getInt("Cuenta"));
-		this.setImporte(rs.getDouble("importe"));
+		this.setidTransacciones(rs.getInt("idTransacciones"));
+		this.setIDCuenta(rs.getInt("IDCuenta"));
+		this.setImporte(rs.getDouble("Importe"));
 	}
 }

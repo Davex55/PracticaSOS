@@ -54,6 +54,7 @@ public class ClientesRecursos {
 		}
 	}
 
+	//NECESARIO
 	/**
 	 * getClientes/0 
 	 * Devuelve la lista de clientes con su Url y su saldo
@@ -69,10 +70,9 @@ public class ClientesRecursos {
 			ListaClientes lista = new ListaClientes();
 			rs.beforeFirst();
 			while (rs.next()) {
-				lista.addListaCliente(new Clientes(uriInfo.getAbsolutePath() + "/" + rs.getInt("idClientes"), 15));
+				lista.addListaCliente(new Clientes(uriInfo.getAbsolutePath() + "" + rs.getInt("idClientes"), 15));
 			}
-			return Response.status(Response.Status.OK).entity(lista).build(); // No se puede devolver el ArrayList (para
-																				// generar XML)
+			return Response.status(Response.Status.OK).entity(lista).build(); 
 		} catch (NumberFormatException e) {
 			return Response.status(Response.Status.BAD_REQUEST).entity("No se pudieron convertir los índices a números")
 					.build();
@@ -244,6 +244,7 @@ public class ClientesRecursos {
 		}
 	}
 
+	//NECESARIO
 	/**
 	 * getRetiradasCliente/1
 	 * Devuelve las retiradas de un cliente cuyo id es {Clientes_id} 
@@ -255,7 +256,7 @@ public class ClientesRecursos {
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getRetiradasCliente(@PathParam("Cliente_id") int id) {
 		try {
-			String sql = "SELECT * FROM BANCO.Transacciones WHERE IDCliente= " + id + " AND IDTipoTransf= " + 2 + ";";
+			String sql = "SELECT * FROM BANCO.Transacciones WHERE IDCuenta IN (SELECT IDCuenta FROM BANCO.Cuentas WHERE IDCliente = " + id + ") AND IDTipoTransf = 2;";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			ListaRetiradas lista = new ListaRetiradas();
@@ -265,8 +266,7 @@ public class ClientesRecursos {
 				retirada.retiradaFromRS(rs);
 				lista.addListaRetirada(retirada);
 			}
-			return Response.status(Response.Status.OK).entity(lista).build(); // No se puede devolver el ArrayList (para
-																				// generar XML)
+			return Response.status(Response.Status.OK).entity(lista).build(); 
 		} catch (NumberFormatException e) {
 			return Response.status(Response.Status.BAD_REQUEST).entity("No se pudieron convertir los índices a números")
 					.build();

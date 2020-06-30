@@ -9,52 +9,52 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "transferencia")
 public class Transferencia {
 	
-	private int orden;
-	private int cuentaOrigen;
-	private int cuentaDestino;
-	private double importe;
+	private int idTransacciones;
+	private int IDCuenta;
+	private int IDCuentaDest;
+	private double Importe;
 	
 	public Transferencia() {
 	}
 
 	@XmlAttribute(required=false)
-	public int getOrden() {
-		return orden;
+	public int getidTransacciones() {
+		return idTransacciones;
 	}
 	
-	public int getCuentaOrigen() {
-		return cuentaOrigen;
+	public void setidTransacciones(int idTransacciones) {
+		this.idTransacciones = idTransacciones;
+	}
+	
+	public int getIDCuenta() {
+		return IDCuenta;
 	}
 
-	public void setCuentaOrigen(int cuentaOrigen) {
-		this.cuentaOrigen = cuentaOrigen;
+	public void setIDCuenta(int IDCuenta) {
+		this.IDCuenta = IDCuenta;
 	}
 
-	public int getCuentaDestino() {
-		return cuentaDestino;
+	public int getIDCuentaDest() {
+		return IDCuentaDest;
 	}
 
-	public void setCuentaDestino(int cuentaDestino) {
-		this.cuentaDestino = cuentaDestino;
+	public void setIDCuentaDest(int IDCuentaDest) {
+		this.IDCuentaDest = IDCuentaDest;
 	}
 
 	public double getImporte() {
-		return importe;
+		return Importe;
 	}
 
-	public void setImporte(double importe) {
-		this.importe = importe;
+	public void setImporte(double Importe) {
+		this.Importe = Importe;
 	}	
 
-	public void setOrden(int orden) {
-		this.orden = orden;
-	}
-	
 	public void TransferenciaFromRS(ResultSet rs) throws SQLException {
-		this.setOrden(rs.getInt("Orden"));
-		this.setCuentaOrigen(rs.getInt("cuentaOrigen"));
-		this.setCuentaDestino(rs.getInt("cuentaDestino"));
-		this.setImporte(rs.getDouble("importe"));
+		this.setidTransacciones(rs.getInt("idTransacciones"));
+		this.setIDCuenta(rs.getInt("IDCuenta"));
+		this.setIDCuentaDest(rs.getInt("IDCuentaDest"));
+		this.setImporte(rs.getDouble("Importe"));
 	}
 		
 }

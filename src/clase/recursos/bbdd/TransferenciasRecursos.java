@@ -98,8 +98,8 @@ public class TransferenciasRecursos {
 	@Consumes(MediaType.APPLICATION_XML)
 	public Response addTransferencia(Transferencia transferencia) {
 		try {
-			int origen = transferencia.getCuentaOrigen();
-			int destino = transferencia.getCuentaDestino();
+			int origen = transferencia.getIDCuenta();
+			int destino = transferencia.getIDCuentaDest();
 			double importe = transferencia.getImporte();
 			Cuenta cuentaOr = new Cuenta();
 			Cuenta cuentaDest = new Cuenta();
@@ -137,8 +137,8 @@ public class TransferenciasRecursos {
 			ps.executeUpdate();
 			ResultSet generatedID = ps.getGeneratedKeys();
 			if (generatedID.next()) {
-				transferencia.setOrden(generatedID.getInt(1));
-				String location = uriInfo.getAbsolutePath() + "/" + transferencia.getOrden();
+				transferencia.setidTransacciones(generatedID.getInt(1));
+				String location = uriInfo.getAbsolutePath() + "/" + transferencia.getidTransacciones();
 				return Response.status(Response.Status.CREATED).entity(transferencia).header("Location", location)
 						.header("Content-Location", location).build();
 			}

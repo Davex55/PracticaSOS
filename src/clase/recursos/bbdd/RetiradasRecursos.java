@@ -103,13 +103,13 @@ public class RetiradasRecursos {
 			ps.executeUpdate();
 			ResultSet generatedID = ps.getGeneratedKeys();
 			if (generatedID.next()) {
-				retirada.setOrden(generatedID.getInt(1));
-				String location = uriInfo.getAbsolutePath() + "/" + retirada.getOrden();
+				retirada.setidTransacciones(generatedID.getInt(1));
+				String location = uriInfo.getAbsolutePath() + "/" + retirada.getidTransacciones();
 				return Response.status(Response.Status.CREATED).entity(retirada).header("Location", location)
 						.header("Content-Location", location).build();
 			}
 			sql = "UPDATE BANCO.Cuentas SET Balance = (Balance - " + retirada.getImporte() + ") WHERE idCuentas = "
-					+ retirada.getCuenta() + ";";
+					+ retirada.getIDCuenta() + ";";
 			ps = conn.prepareStatement(sql);
 			ps.executeUpdate();
 //			String location = uriInfo.getAbsolutePath() + "/" + cuenta.getId();
