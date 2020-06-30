@@ -20,13 +20,13 @@ VALUES
 (200,2);
 
 
-INSERT INTO Transacciones (Importe, IDCuenta, IDTipoTransf)
+INSERT INTO Transacciones (Importe, IDCuenta,IDCuentaDest, IDTipoTransf)
 VALUES 
-(500,2,1),
-(1000,1,1),
-(10000,3,1),
-(10,4,2),
-(20,4,2),
-(40,6,2),
-(500,7,2),
-(100,8,2);
+(500,2,4,1),
+(1000,1,3,1),
+(10000,3,1,1),
+(10,4,1,2),
+(20,4,3,2),
+(40,6,2,2),
+(500,7,4,2),
+(100,8,1,2);
