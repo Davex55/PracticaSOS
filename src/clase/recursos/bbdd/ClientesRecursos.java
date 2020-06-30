@@ -82,6 +82,7 @@ public class ClientesRecursos {
 		}
 	}
 
+	// NECESARIO
 	/**
 	 * getCliente/1
 	 * Devuelve el cliente con el id de {Cliente_id}
@@ -112,6 +113,7 @@ public class ClientesRecursos {
 		}
 	}
 
+	//NECESARIO
 	/**
 	 * addCliente/1 
 	 * Crea un nuevo cliente en la bbdd utilizando el objeto clientes que se le pasa como arg1
@@ -140,6 +142,7 @@ public class ClientesRecursos {
 		}
 	}
 
+	//NECESARIO
 	/**
 	 * updateCliente/2
 	 * Actualiza un cliente con el id {Cliente_id}(arg1) de la bbdd con los atributos del objeto nuevo_cliente(arg2)
@@ -154,7 +157,7 @@ public class ClientesRecursos {
 		try {
 			Cliente cliente = new Cliente();
 			int int_id = Integer.parseInt(id);
-			String sql = "SELECT * FROM BANCO.Clientes where idCientes = " + int_id + ";";
+			String sql = "SELECT * FROM BANCO.Clientes WHERE idClientes = " + int_id + ";";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
@@ -178,10 +181,12 @@ public class ClientesRecursos {
 		} catch (NumberFormatException e) {
 			return Response.status(Response.Status.BAD_REQUEST).entity("No puedo parsear a entero").build();
 		} catch (SQLException e) {
+			e.printStackTrace();			
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error de acceso a BBDD").build();
 		}
 	}
 
+	//NECESARIO
 	/**
 	 * deleteCliente/1
 	 * Elimina el cliente con el id {Cliente_id} de la bbdd
@@ -250,7 +255,7 @@ public class ClientesRecursos {
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getRetiradasCliente(@PathParam("Cliente_id") int id) {
 		try {
-			String sql = "SELECT * FROM BANCO.Transacciones WHERE IDCliente= " + id + " AND ;";
+			String sql = "SELECT * FROM BANCO.Transacciones WHERE IDCliente= " + id + " AND IDTipoTransf= " + 2 + ";";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			ListaRetiradas lista = new ListaRetiradas();

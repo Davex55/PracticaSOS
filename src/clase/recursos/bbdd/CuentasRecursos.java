@@ -114,6 +114,7 @@ public class CuentasRecursos {
 
 	}
 
+	//NECESARIO
 	/**
 	 * addCuenta/1
 	 * Crea una cuenta nueva en la bbdd
@@ -182,6 +183,7 @@ public class CuentasRecursos {
 		}
 	}
 
+	//NECESARIO
 	/**
 	 * deleteCuenta/1
 	 * Elimina una cuenta con el id {Cuenta_id}
@@ -193,15 +195,16 @@ public class CuentasRecursos {
 	public Response deleteCuenta(@PathParam("Cuenta_id") String id) {
 		try {
 			int int_id = Integer.parseInt(id);
-			Cuenta cuenta = new Cuenta();
 			String sql = "SELECT * FROM BANCO.Cuentas WHERE idCuentas = " + int_id + " ;";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
-			cuenta.cuentaFromRS(rs);
-			if (cuenta.getSaldo() <= 0) {
-				return Response.status(Response.Status.NOT_ACCEPTABLE).entity("La cuenta no tiene saldo 0").build();
+			if (rs.next()) {
+				Cuenta cuenta = new Cuenta();
+				cuenta.cuentaFromRS(rs);
+				if (cuenta.getSaldo() > 0) {
+					return Response.status(Response.Status.NOT_ACCEPTABLE).entity("La cuenta no tiene saldo 0").build();
+				}
 			}
-
 			sql = "DELETE FROM BANCO.Cuentas WHERE idCuentas = " + int_id + " ;";
 			ps = conn.prepareStatement(sql);
 			int affectedRows = ps.executeUpdate();
@@ -212,8 +215,9 @@ public class CuentasRecursos {
 		} catch (NumberFormatException e) {
 			return Response.status(Response.Status.BAD_REQUEST).entity("No puedo parsear a entero").build();
 		} catch (SQLException e) {
+			e.printStackTrace();
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-					.entity("No se pudo eliminar el cliente\n" + e.getStackTrace()).build();
+					.entity("No se pudo eliminar el cliente\n").build();
 		}
 	}
 

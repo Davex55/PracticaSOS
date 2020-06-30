@@ -103,9 +103,13 @@ public class TransferenciasRecursos {
 			double importe = transferencia.getImporte();
 			Cuenta cuentaOr = new Cuenta();
 			Cuenta cuentaDest = new Cuenta();
-			String sql = "SELECT * FROM BANCO.Cuentas WHERE idCuentas = " + origen;
+			System.out.println("hasta aqui1");
+			String sql = "SELECT * FROM BANCO.Cuentas WHERE idCuentas = " + origen + ";";
+			System.out.println("hasta aqui2");
 			PreparedStatement ps = conn.prepareStatement(sql);
+			System.out.println("hasta aqui3");
 			ResultSet rs = ps.executeQuery();
+			System.out.println("hasta aqui");
 			if (rs.next()) {
 				cuentaOr.cuentaFromRS(rs);
 			} else {
@@ -116,13 +120,11 @@ public class TransferenciasRecursos {
 				// Se calcula el saldo final 
 				double balanceOrFin = cuentaOr.getSaldo() - importe;
 				// Actualiza el Saldo de la cuesta origen
-				sql = "UPDATE BANCO.Cuentas SET Balance = " + balanceOrFin + "WHERE idCuentas = " + cuentaOr.getId()
-						+ ";";
+				sql = "UPDATE BANCO.Cuentas SET Balance = " + balanceOrFin + "WHERE idCuentas = " + cuentaOr.getId() + ";";
 				ps = conn.prepareStatement(sql);
 				ps.executeUpdate();
 				// Actualiza el saldo de la cuenta destino
-				sql = "UPDATE BANCO.Cuentas SET Balance = (balance + " + importe + ") WHERE idCuentas = " + cuentaDest.getId()
-				+ ";";
+				sql = "UPDATE BANCO.Cuentas SET Balance = (balance + " + importe + ") WHERE idCuentas = " + cuentaDest.getId() + ";";
 				ps = conn.prepareStatement(sql);
 				ps.executeUpdate();
 				// Se crea una nueva transferencia en el recurso /api/transferencia

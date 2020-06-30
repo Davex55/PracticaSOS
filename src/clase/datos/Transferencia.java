@@ -3,6 +3,10 @@ package clase.datos;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name = "transferencia")
 public class Transferencia {
 	
 	private int orden;
@@ -13,6 +17,11 @@ public class Transferencia {
 	public Transferencia() {
 	}
 
+	@XmlAttribute(required=false)
+	public int getOrden() {
+		return orden;
+	}
+	
 	public int getCuentaOrigen() {
 		return cuentaOrigen;
 	}
@@ -35,11 +44,7 @@ public class Transferencia {
 
 	public void setImporte(double importe) {
 		this.importe = importe;
-	}
-
-	public int getOrden() {
-		return orden;
-	}
+	}	
 
 	public void setOrden(int orden) {
 		this.orden = orden;
