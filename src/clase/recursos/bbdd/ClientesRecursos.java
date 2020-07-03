@@ -64,7 +64,7 @@ public class ClientesRecursos {
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Response getClientes() {
 		try {
-			String sql = "SELECT * FROM BANCO.Clientes " + ";";
+			String sql = "SELECT * FROM BANCO.Clientes;";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			ListaClientes lista = new ListaClientes();
