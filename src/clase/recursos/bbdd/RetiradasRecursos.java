@@ -69,7 +69,7 @@ public class RetiradasRecursos {
 		try {
 			int int_id = Integer.parseInt(id);
 			int tipoTransf = 2;
-			String sql = "SELECT idTransacciones, Importe, IDCuenta, Fecha FROM BANCO.Transacciones WHERE idTransacciones = "
+			String sql = "SELECT * FROM BANCO.Transacciones WHERE idTransacciones = "
 					+ int_id + " AND IDTipoTransf = " + tipoTransf + " ;";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
