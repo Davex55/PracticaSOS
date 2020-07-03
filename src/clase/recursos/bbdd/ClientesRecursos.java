@@ -70,7 +70,7 @@ public class ClientesRecursos {
 			ListaClientes lista = new ListaClientes();
 			rs.beforeFirst();
 			while (rs.next()) {
-				lista.addListaCliente(new Clientes(uriInfo.getAbsolutePath() + "" + rs.getInt("idClientes"), 15));
+				lista.addListaCliente(new Clientes(uriInfo.getAbsolutePath() + "/" + rs.getInt("idClientes"), 15));
 			}
 			return Response.status(Response.Status.OK).entity(lista).build(); 
 		} catch (NumberFormatException e) {
@@ -138,6 +138,7 @@ public class ClientesRecursos {
 			}
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error de acceso a BBDD").build();
 		} catch (SQLException e) {
+			e.printStackTrace();
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error de acceso a BBDD").build();
 		}
 	}
@@ -228,6 +229,8 @@ public class ClientesRecursos {
 			ResultSet rs = ps.executeQuery();
 			ListaCuentas lista = new ListaCuentas();
 			rs.beforeFirst();
+			if(!rs.next()) 
+				return Response.status(Response.Status.NOT_FOUND).entity("No se encontraron retiradas ni transferencias").build();
 			while (rs.next()) {
 				Cuenta cuenta = new Cuenta();
 				cuenta.cuentaFromRS(rs);
@@ -245,6 +248,7 @@ public class ClientesRecursos {
 	}
 
 	//NECESARIO
+	//Revisar
 	/**
 	 * getRetiradasCliente/1
 	 * Devuelve las retiradas de un cliente cuyo id es {Clientes_id} 
@@ -259,12 +263,14 @@ public class ClientesRecursos {
 			String sql = "SELECT * FROM BANCO.Transacciones WHERE IDCuenta IN (SELECT IDCuenta FROM BANCO.Cuentas WHERE IDCliente = " + id + ") AND IDTipoTransf = 2;";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
-			ListaRetiradas lista = new ListaRetiradas();
+			ListaMovimientos lista = new ListaMovimientos();
 			rs.beforeFirst();
+			if(!rs.next()) 
+				return Response.status(Response.Status.NOT_FOUND).entity("No se encontraron retiradas").build();
 			while (rs.next()) {
-				Retirada retirada = new Retirada();
-				retirada.retiradaFromRS(rs);
-				lista.addListaRetirada(retirada);
+				Movimientos movimiento = new Movimientos();
+				movimiento.retiradaFromRS(rs);
+				lista.addListaMovimientos(movimiento);
 			}
 			return Response.status(Response.Status.OK).entity(lista).build(); 
 		} catch (NumberFormatException e) {
@@ -276,6 +282,8 @@ public class ClientesRecursos {
 		}
 	}
 
+	//NECESARIO
+	//Revisar
 	/**
 	 * getRetiradasTransferenciasCliente/1
 	 * Devuelve todas la retiradas y transferencias de el cliente con id {Cliente_id}
@@ -286,6 +294,26 @@ public class ClientesRecursos {
 	@Path("{Cliente_id}/retiradasTransferencias")
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getRetiradasTransferenciasCliente(@PathParam("Cliente_id") int id) {
-		return null;
+		try {
+			String sql = "SELECT * FROM BANCO.Transacciones WHERE IDCuenta IN (SELECT IDCuenta FROM BANCO.Cuentas WHERE IDCliente = " + id + ");";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			ListaMovimientos lista = new ListaMovimientos();
+			rs.beforeFirst();
+			if(!rs.next()) 
+				return Response.status(Response.Status.NOT_FOUND).entity("No se encontraron retiradas ni transferencias").build();
+			while (rs.next()) {
+				Movimientos movimiento = new Movimientos();
+				movimiento.retiradaFromRS(rs);
+				lista.addListaMovimientos(movimiento);
+			}
+			return Response.status(Response.Status.OK).entity(lista).build(); 
+		} catch (NumberFormatException e) {
+			return Response.status(Response.Status.BAD_REQUEST).entity("No se pudieron convertir los índices a números")
+					.build();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error de acceso a BBDD").build();
+		}
 	}
 }
