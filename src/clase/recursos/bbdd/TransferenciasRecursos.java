@@ -24,7 +24,7 @@ import javax.ws.rs.Produces;
 import org.apache.naming.NamingContext;
 
 import clase.datos.Cuenta;
-import clase.datos.Transferencia;
+import clase.datos.Movimientos;
 
 @Path("/transferencias")
 public class TransferenciasRecursos {
@@ -52,12 +52,6 @@ public class TransferenciasRecursos {
 		}
 	}
 
-	@GET
-	@Produces(MediaType.APPLICATION_XML)
-	public Response getTransferencias() {
-		return null;
-	}
-
 	/**
 	 * getTransferencia/1
 	 * Devuelve la transferencia con el id {Transferencia_id}
@@ -75,9 +69,9 @@ public class TransferenciasRecursos {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
-				Transferencia transferencia = new Transferencia();
-				transferencia.TransferenciaFromRS(rs);
-				return Response.status(Response.Status.OK).entity(transferencia).build();
+				Movimientos movimientos = new Movimientos();
+				movimientos.transferenciaFromRS(rs);
+				return Response.status(Response.Status.OK).entity(movimientos).build();
 			} else {
 				return Response.status(Response.Status.NOT_FOUND).entity("Elemento no encontrado").build();
 			}
@@ -88,6 +82,8 @@ public class TransferenciasRecursos {
 		}
 	}
 
+	//NECESARIO
+	//Revisar!!!
 	/**
 	 * addTransferencia/1
 	 * Crea una transferencia en la bbdd
@@ -96,7 +92,7 @@ public class TransferenciasRecursos {
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_XML)
-	public Response addTransferencia(Transferencia transferencia) {
+	public Response addTransferencia(Movimientos transferencia) {
 		try {
 			int origen = transferencia.getIDCuenta();
 			int destino = transferencia.getIDCuentaDest();
@@ -148,6 +144,8 @@ public class TransferenciasRecursos {
 		}
 	}
 
+	//NECESARIO
+	//Revisar
 	/**
 	 * deleteTransferenciasCuenta/1
 	 * Elimina la transferencia con el id {Transferencia_id}

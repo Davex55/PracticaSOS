@@ -24,7 +24,7 @@ import org.apache.naming.NamingContext;
 
 import clase.datos.Cuenta;
 import clase.datos.ListaCuentas;
-import clase.datos.Retirada;
+import clase.datos.Movimientos;
 
 @Path("/retiradas")
 public class RetiradasRecursos {
@@ -74,9 +74,9 @@ public class RetiradasRecursos {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
-				Retirada retirada = new Retirada();
-				retirada.retiradaFromRS(rs);
-				return Response.status(Response.Status.OK).entity(retirada).build();
+				Movimientos movimientos = new Movimientos();
+				movimientos.retiradaFromRS(rs);
+				return Response.status(Response.Status.OK).entity(movimientos).build();
 			} else {
 				return Response.status(Response.Status.NOT_FOUND).entity("Elemento no encontrado").build();
 			}
@@ -87,6 +87,8 @@ public class RetiradasRecursos {
 		}
 	}
 
+	//NECESARIO 
+	//Revisar 
 	/**
 	 * addRetirada/1
 	 * Crea una retirada en la bbdd
@@ -95,7 +97,7 @@ public class RetiradasRecursos {
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_XML)
-	public Response addRetirada(Retirada retirada) {
+	public Response addRetirada(Movimientos movimiento) {
 		try {
 
 			String sql = "INSERT INTO Banco.Transacciones (Importe, IDCuenta, IDTipoTransf)";
@@ -103,19 +105,15 @@ public class RetiradasRecursos {
 			ps.executeUpdate();
 			ResultSet generatedID = ps.getGeneratedKeys();
 			if (generatedID.next()) {
-				retirada.setidTransacciones(generatedID.getInt(1));
-				String location = uriInfo.getAbsolutePath() + "/" + retirada.getidTransacciones();
-				return Response.status(Response.Status.CREATED).entity(retirada).header("Location", location)
+				movimiento.setidTransacciones(generatedID.getInt(1));
+				String location = uriInfo.getAbsolutePath() + "/" + movimiento.getidTransacciones();
+				return Response.status(Response.Status.CREATED).entity(movimiento).header("Location", location)
 						.header("Content-Location", location).build();
 			}
-			sql = "UPDATE BANCO.Cuentas SET Balance = (Balance - " + retirada.getImporte() + ") WHERE idCuentas = "
-					+ retirada.getIDCuenta() + ";";
+			sql = "UPDATE BANCO.Cuentas SET Balance = (Balance - " + movimiento.getImporte() + ") WHERE idCuentas = "
+					+ movimiento.getIDCuenta() + ";";
 			ps = conn.prepareStatement(sql);
 			ps.executeUpdate();
-//			String location = uriInfo.getAbsolutePath() + "/" + cuenta.getId();
-//			return Response.status(Response.Status.CREATED).entity(cuenta).header("Location", location)
-//					.header("Content-Location", location).build();
-
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error de acceso a BBDD").build();
 		} catch (SQLException e) {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error de acceso a BBDD").build();

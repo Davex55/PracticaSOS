@@ -7,14 +7,15 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "transferencia")
-public class Transferencia {
+public class Movimientos {
 	
 	private int idTransacciones;
 	private int IDCuenta;
 	private int IDCuentaDest;
 	private double Importe;
-	
-	public Transferencia() {
+	private int tipo;
+		
+	public Movimientos() {
 	}
 
 	@XmlAttribute(required=false)
@@ -24,6 +25,14 @@ public class Transferencia {
 	
 	public void setidTransacciones(int idTransacciones) {
 		this.idTransacciones = idTransacciones;
+	}
+	
+	public int getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(int tipo) {
+		this.tipo = tipo;
 	}
 	
 	public int getIDCuenta() {
@@ -50,11 +59,18 @@ public class Transferencia {
 		this.Importe = Importe;
 	}	
 
-	public void TransferenciaFromRS(ResultSet rs) throws SQLException {
+	public void transferenciaFromRS(ResultSet rs) throws SQLException {
 		this.setidTransacciones(rs.getInt("idTransacciones"));
 		this.setIDCuenta(rs.getInt("IDCuenta"));
 		this.setIDCuentaDest(rs.getInt("IDCuentaDest"));
 		this.setImporte(rs.getDouble("Importe"));
+		this.setTipo(rs.getInt("IDTipoTransf"));		
 	}
-		
+	
+	public void retiradaFromRS(ResultSet rs) throws SQLException {
+		this.setidTransacciones(rs.getInt("idTransacciones"));
+		this.setIDCuenta(rs.getInt("IDCuenta"));
+		this.setImporte(rs.getDouble("Importe"));
+		this.setTipo(rs.getInt("IDTipoTransf"));
+	}		
 }

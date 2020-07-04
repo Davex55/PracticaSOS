@@ -26,10 +26,8 @@ import org.apache.naming.NamingContext;
 import clase.datos.Cliente;
 import clase.datos.Cuenta;
 import clase.datos.ListaCuentas;
-import clase.datos.ListaRetiradas;
-import clase.datos.ListaTransferencias;
-import clase.datos.Retirada;
-import clase.datos.Transferencia;
+import clase.datos.ListaMovimientos;
+import clase.datos.Movimientos;
 
 @Path("/cuentas")
 public class CuentasRecursos {
@@ -237,12 +235,14 @@ public class CuentasRecursos {
 			String sql = "SELECT * FROM BANCO.Transacciones WHERE IDCuenta =" + int_id + " AND IDTipoTransf = 2;";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
-			ListaRetiradas lista = new ListaRetiradas();
+			ListaMovimientos lista = new ListaMovimientos();
 			rs.beforeFirst();
+			if(!rs.next()) 
+				return Response.status(Response.Status.NOT_FOUND).entity("No se encontraron retiradas").build();
 			while (rs.next()) {
-				Retirada retirada = new Retirada();
-				retirada.retiradaFromRS(rs);
-				lista.addListaRetirada(retirada);
+				Movimientos movimiento = new Movimientos();
+				movimiento.retiradaFromRS(rs);
+				lista.addListaMovimientos(movimiento);
 			}
 			return Response.status(Response.Status.OK).entity(lista).build();
 		} catch (NumberFormatException e) {
@@ -255,6 +255,7 @@ public class CuentasRecursos {
 	}
 
 	//NECESARIO
+	//Revisar
 	/**
 	 * getTransferenciasCuenta/1
 	 * Devuelve todas las transferencias de la cuenta con id {Cuenta_id}
@@ -271,12 +272,14 @@ public class CuentasRecursos {
 			String sql = "SELECT * FROM BANCO.Transacciones WHERE IDCuenta =" + int_id + " AND IDTipoTransf = 1;";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
-			ListaTransferencias lista = new ListaTransferencias();
+			ListaMovimientos lista = new ListaMovimientos();
 			rs.beforeFirst();
+			if(!rs.next()) 
+				return Response.status(Response.Status.NOT_FOUND).entity("No se encontraron transferencias").build();
 			while (rs.next()) {
-				Transferencia transferencia = new Transferencia();
-				transferencia.TransferenciaFromRS(rs);
-				lista.addListaTransferencia(transferencia);
+				Movimientos movimientos = new Movimientos();
+				movimientos.transferenciaFromRS(rs);
+				lista.addListaMovimientos(movimientos);
 			}
 			return Response.status(Response.Status.OK).entity(lista).build();
 		} catch (NumberFormatException e) {
