@@ -255,7 +255,7 @@ public class CuentasRecursos {
 	}
 
 	//NECESARIO
-	//Revisar
+	//Revisar!!!!
 	/**
 	 * getTransferenciasCuenta/1
 	 * Devuelve todas las transferencias de la cuenta con id {Cuenta_id}
@@ -269,7 +269,7 @@ public class CuentasRecursos {
 		try {
 			int int_id = Integer.parseInt(id);
 			//int tipoTransf = 1; // 1->Transferencia
-			String sql = "SELECT * FROM BANCO.Transacciones WHERE IDCuenta =" + int_id + " AND IDTipoTransf = 1;";
+			String sql = "SELECT * FROM BANCO.Transacciones WHERE IDCuenta =" + int_id + " AND IDTipoTransf = 2;";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			ListaMovimientos lista = new ListaMovimientos();

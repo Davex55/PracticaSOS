@@ -53,7 +53,9 @@ public class ClientesRecursos {
 		}
 	}
 
-	// NECESARIO
+
+	//NECESARIO
+	// agregar el saldo de los clientes
 	/**
 	 * getClientes/0 Devuelve la lista de clientes con su Url y su saldo
 	 * 
@@ -265,12 +267,12 @@ public class ClientesRecursos {
 					+ id + ") AND IDTipoTransf = 2;";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
-			ListaRetiradas lista = new ListaRetiradas();
+			ListaMovimientos lista = new ListaMovimientos();
 			rs.beforeFirst();
 			while (rs.next()) {
-				Retirada retirada = new Retirada();
+				Movimientos retirada = new Movimientos();
 				retirada.retiradaFromRS(rs);
-				lista.addListaRetirada(retirada);
+				lista.addListaMovimientos(retirada);
 			}
 			return Response.status(Response.Status.OK).entity(lista).build();
 		} catch (NumberFormatException e) {
