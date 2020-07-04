@@ -57,8 +57,8 @@ public class RetiradasRecursos {
 	}
 
 	/**
-	 * getRetirada/1
-	 * Devuelve la retirada con el id {Retirada_id}
+	 * getRetirada/1 Devuelve la retirada con el id {Retirada_id}
+	 * 
 	 * @param id
 	 * @return XML de tipo Retirada
 	 */
@@ -69,8 +69,8 @@ public class RetiradasRecursos {
 		try {
 			int int_id = Integer.parseInt(id);
 			int tipoTransf = 2;
-			String sql = "SELECT * FROM BANCO.Transacciones WHERE idTransacciones = "
-					+ int_id + " AND IDTipoTransf = " + tipoTransf + " ;";
+			String sql = "SELECT * FROM BANCO.Transacciones WHERE idTransacciones = " + int_id + " AND IDTipoTransf = "
+					+ tipoTransf + " ;";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
@@ -87,11 +87,11 @@ public class RetiradasRecursos {
 		}
 	}
 
-	//NECESARIO 
-	//Revisar 
+	// NECESARIO
+	// Revisar
 	/**
-	 * addRetirada/1
-	 * Crea una retirada en la bbdd
+	 * addRetirada/1 Crea una retirada en la bbdd
+	 * 
 	 * @param retirada
 	 * @return Response con la Url del recurso
 	 */
@@ -99,8 +99,11 @@ public class RetiradasRecursos {
 	@Consumes(MediaType.APPLICATION_XML)
 	public Response addRetirada(Movimientos movimiento) {
 		try {
-
-			String sql = "INSERT INTO Banco.Transacciones (Importe, IDCuenta, IDTipoTransf)";
+			double importe = movimiento.getImporte();
+			int idCuenta = movimiento.getIDCuenta();
+			int idTipoTransf = 2;
+			String sql = "INSERT INTO Banco.Transacciones (Importe, IDCuenta, IDTipoTransf) VALUES " + importe + ", "
+					+ idCuenta + ", " + idTipoTransf + ";";
 			PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			ps.executeUpdate();
 			ResultSet generatedID = ps.getGeneratedKeys();
