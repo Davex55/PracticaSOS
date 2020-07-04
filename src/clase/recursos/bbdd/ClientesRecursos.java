@@ -32,7 +32,6 @@ import clase.datos.*;
 @Path("/clientes")
 public class ClientesRecursos {
 
-	
 	@Context
 	private UriInfo uriInfo;
 
@@ -54,26 +53,32 @@ public class ClientesRecursos {
 		}
 	}
 
+<<<<<<< HEAD
 	//NECESARIO
 	// agregar el saldo de los clientes
+=======
+	// NECESARIO
+>>>>>>> 7acf9b41a4b15df75c5d9e6af81f23ed54e206e8
 	/**
-	 * getClientes/0 
-	 * Devuelve la lista de clientes con su Url y su saldo
-	 * @return XML de tipo ListaClientes 
+	 * getClientes/0 Devuelve la lista de clientes con su Url y su saldo
+	 * 
+	 * @return XML de tipo ListaClientes
 	 */
 	@GET
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Response getClientes() {
 		try {
-			String sql = "SELECT * FROM BANCO.Clientes;";
+			String sql = "select (select Clientes.idClientes from Clientes where Clientes.idClientes=Cuentas.IDCliente)as idClientes,"
+					+ "(select Clientes.Nombre from Clientes where Clientes.idClientes=Cuentas.IDCliente)as Nombre,"
+					+ " sum(Cuentas.balance)from Cuentas group by Cuentas.IDCliente";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			ListaClientes lista = new ListaClientes();
 			rs.beforeFirst();
 			while (rs.next()) {
-				lista.addListaCliente(new Clientes(uriInfo.getAbsolutePath() + "/" + rs.getInt("idClientes"), 15));
+				lista.addListaCliente(new Clientes(uriInfo.getAbsolutePath() + "" + rs.getInt("idClientes"), 15));
 			}
-			return Response.status(Response.Status.OK).entity(lista).build(); 
+			return Response.status(Response.Status.OK).entity(lista).build();
 		} catch (NumberFormatException e) {
 			return Response.status(Response.Status.BAD_REQUEST).entity("No se pudieron convertir los índices a números")
 					.build();
@@ -85,8 +90,8 @@ public class ClientesRecursos {
 
 	// NECESARIO
 	/**
-	 * getCliente/1
-	 * Devuelve el cliente con el id de {Cliente_id}
+	 * getCliente/1 Devuelve el cliente con el id de {Cliente_id}
+	 * 
 	 * @param id
 	 * @return XML de tipo Cliente
 	 */
@@ -114,10 +119,11 @@ public class ClientesRecursos {
 		}
 	}
 
-	//NECESARIO
+	// NECESARIO
 	/**
-	 * addCliente/1 
-	 * Crea un nuevo cliente en la bbdd utilizando el objeto clientes que se le pasa como arg1
+	 * addCliente/1 Crea un nuevo cliente en la bbdd utilizando el objeto clientes
+	 * que se le pasa como arg1
+	 * 
 	 * @param cliente
 	 * @return Response con la Url del nuevo recurso creado
 	 */
@@ -125,9 +131,9 @@ public class ClientesRecursos {
 	@Consumes(MediaType.APPLICATION_XML)
 	public Response addCliente(Cliente cliente) {
 		try {
-			String sql = "INSERT INTO BANCO.Clientes (Nombre, DNI, Telefono, Direccion) VALUES ('"
-					+ cliente.getNombre() + "', '" + cliente.getDni() + "', '" + cliente.getTelefono() + "', '"
-					+ cliente.getDireccion() + "');";
+			String sql = "INSERT INTO BANCO.Clientes (Nombre, DNI, Telefono, Direccion) VALUES ('" + cliente.getNombre()
+					+ "', '" + cliente.getDni() + "', '" + cliente.getTelefono() + "', '" + cliente.getDireccion()
+					+ "');";
 			PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			ps.executeUpdate();
 			ResultSet generatedID = ps.getGeneratedKeys();
@@ -139,15 +145,15 @@ public class ClientesRecursos {
 			}
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error de acceso a BBDD").build();
 		} catch (SQLException e) {
-			e.printStackTrace();
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error de acceso a BBDD").build();
 		}
 	}
 
-	//NECESARIO
+	// NECESARIO
 	/**
-	 * updateCliente/2
-	 * Actualiza un cliente con el id {Cliente_id}(arg1) de la bbdd con los atributos del objeto nuevo_cliente(arg2)
+	 * updateCliente/2 Actualiza un cliente con el id {Cliente_id}(arg1) de la bbdd
+	 * con los atributos del objeto nuevo_cliente(arg2)
+	 * 
 	 * @param id
 	 * @param nuevo_cliente
 	 * @return Response
@@ -183,15 +189,15 @@ public class ClientesRecursos {
 		} catch (NumberFormatException e) {
 			return Response.status(Response.Status.BAD_REQUEST).entity("No puedo parsear a entero").build();
 		} catch (SQLException e) {
-			e.printStackTrace();			
+			e.printStackTrace();
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error de acceso a BBDD").build();
 		}
 	}
 
-	//NECESARIO
+	// NECESARIO
 	/**
-	 * deleteCliente/1
-	 * Elimina el cliente con el id {Cliente_id} de la bbdd
+	 * deleteCliente/1 Elimina el cliente con el id {Cliente_id} de la bbdd
+	 * 
 	 * @param id
 	 * @return Response
 	 */
@@ -200,7 +206,8 @@ public class ClientesRecursos {
 	public Response deleteCliente(@PathParam("Cliente_id") String id) {
 		try {
 			int int_id = Integer.parseInt(id);
-			String sql = "DELETE FROM BANCO.Clientes WHERE idClientes =" + int_id + ";";
+			String sql = "DELETE FROM BANCO.Clientes WHERE ( SELECT COUNT(idCuentas) FROM BANCO.Cuentas WHERE IDCliente="
+					+ int_id + ")=0 AND idClientes =" + int_id + ";";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			int affectedRows = ps.executeUpdate();
 			if (affectedRows == 1)
@@ -216,8 +223,8 @@ public class ClientesRecursos {
 	}
 
 	/**
-	 * getCuentasCliente/1
-	 * Devuelve las cuentas del cliente con el id {Cliente_id}
+	 * getCuentasCliente/1 Devuelve las cuentas del cliente con el id {Cliente_id}
+	 * 
 	 * @param id
 	 * @return XML de tipo ListaCuentas
 	 */
@@ -230,8 +237,6 @@ public class ClientesRecursos {
 			ResultSet rs = ps.executeQuery();
 			ListaCuentas lista = new ListaCuentas();
 			rs.beforeFirst();
-			if(!rs.next()) 
-				return Response.status(Response.Status.NOT_FOUND).entity("No se encontraron retiradas ni transferencias").build();
 			while (rs.next()) {
 				Cuenta cuenta = new Cuenta();
 				cuenta.cuentaFromRS(rs);
@@ -248,11 +253,11 @@ public class ClientesRecursos {
 		}
 	}
 
-	//NECESARIO
-	//Revisar
+	// NECESARIO
 	/**
-	 * getRetiradasCliente/1
-	 * Devuelve las retiradas de un cliente cuyo id es {Clientes_id} 
+	 * getRetiradasCliente/1 Devuelve las retiradas de un cliente cuyo id es
+	 * {Clientes_id}
+	 * 
 	 * @param id
 	 * @return XML tipo ListaRetiradas
 	 */
@@ -261,19 +266,18 @@ public class ClientesRecursos {
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getRetiradasCliente(@PathParam("Cliente_id") int id) {
 		try {
-			String sql = "SELECT * FROM BANCO.Transacciones WHERE IDCuenta IN (SELECT IDCuenta FROM BANCO.Cuentas WHERE IDCliente = " + id + ") AND IDTipoTransf = 2;";
+			String sql = "SELECT * FROM BANCO.Transacciones WHERE IDCuenta IN (SELECT IDCuenta FROM BANCO.Cuentas WHERE IDCliente = "
+					+ id + ") AND IDTipoTransf = 2;";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
-			ListaMovimientos lista = new ListaMovimientos();
+			ListaRetiradas lista = new ListaRetiradas();
 			rs.beforeFirst();
-			if(!rs.next()) 
-				return Response.status(Response.Status.NOT_FOUND).entity("No se encontraron retiradas").build();
 			while (rs.next()) {
-				Movimientos movimiento = new Movimientos();
-				movimiento.retiradaFromRS(rs);
-				lista.addListaMovimientos(movimiento);
+				Retirada retirada = new Retirada();
+				retirada.retiradaFromRS(rs);
+				lista.addListaRetirada(retirada);
 			}
-			return Response.status(Response.Status.OK).entity(lista).build(); 
+			return Response.status(Response.Status.OK).entity(lista).build();
 		} catch (NumberFormatException e) {
 			return Response.status(Response.Status.BAD_REQUEST).entity("No se pudieron convertir los índices a números")
 					.build();
@@ -283,11 +287,10 @@ public class ClientesRecursos {
 		}
 	}
 
-	//NECESARIO
-	//Revisar
 	/**
-	 * getRetiradasTransferenciasCliente/1
-	 * Devuelve todas la retiradas y transferencias de el cliente con id {Cliente_id}
+	 * getRetiradasTransferenciasCliente/1 Devuelve todas la retiradas y
+	 * transferencias de el cliente con id {Cliente_id}
+	 * 
 	 * @param id
 	 * @return XML tipo ListaRetiradas y ListaTransferencias
 	 */
@@ -295,26 +298,6 @@ public class ClientesRecursos {
 	@Path("{Cliente_id}/retiradasTransferencias")
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getRetiradasTransferenciasCliente(@PathParam("Cliente_id") int id) {
-		try {
-			String sql = "SELECT * FROM BANCO.Transacciones WHERE IDCuenta IN (SELECT IDCuenta FROM BANCO.Cuentas WHERE IDCliente = " + id + ");";
-			PreparedStatement ps = conn.prepareStatement(sql);
-			ResultSet rs = ps.executeQuery();
-			ListaMovimientos lista = new ListaMovimientos();
-			rs.beforeFirst();
-			if(!rs.next()) 
-				return Response.status(Response.Status.NOT_FOUND).entity("No se encontraron retiradas ni transferencias").build();
-			while (rs.next()) {
-				Movimientos movimiento = new Movimientos();
-				movimiento.retiradaFromRS(rs);
-				lista.addListaMovimientos(movimiento);
-			}
-			return Response.status(Response.Status.OK).entity(lista).build(); 
-		} catch (NumberFormatException e) {
-			return Response.status(Response.Status.BAD_REQUEST).entity("No se pudieron convertir los índices a números")
-					.build();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error de acceso a BBDD").build();
-		}
+		return null;
 	}
 }
