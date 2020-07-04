@@ -55,6 +55,7 @@ public class ClientesRecursos {
 	}
 
 	//NECESARIO
+	// agregar el saldo de los clientes
 	/**
 	 * getClientes/0 
 	 * Devuelve la lista de clientes con su Url y su saldo
