@@ -264,8 +264,8 @@ public class ClientesRecursos {
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getRetiradasCliente(@PathParam("Cliente_id") int id) {
 		try {
-			String sql = "SELECT * FROM BANCO.Transacciones WHERE IDCuenta IN (SELECT idCuentas FROM BANCO.Cuentas WHERE IDCliente = "
-					+ id + ") AND IDTipoTransf = 2;";
+			String sql = "SELECT * FROM BANCO.Transacciones WHERE IDTipoTransf=2 and "
+					+ "(IDCuenta IN (SELECT idCuentas FROM BANCO.Cuentas WHERE IDCliente = "+id+"));";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			ListaMovimientos lista = new ListaMovimientos();
