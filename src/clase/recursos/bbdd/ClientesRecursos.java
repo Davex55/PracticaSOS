@@ -217,6 +217,7 @@ public class ClientesRecursos {
 	@DELETE
 	@Path("{Cliente_id}")
 	public Response deleteCliente(@PathParam("Cliente_id") String id) {
+
 		try {
 			int int_id = Integer.parseInt(id);
 			String sql = "DELETE FROM BANCO.Clientes WHERE ( SELECT COUNT(idCuentas) FROM BANCO.Cuentas WHERE IDCliente="
@@ -233,6 +234,7 @@ public class ClientesRecursos {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
 					.entity("No se pudo eliminar el cliente\n" + e.getStackTrace()).build();
 		}
+
 	}
 
 	/**

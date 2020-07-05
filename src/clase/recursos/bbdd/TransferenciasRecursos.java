@@ -11,6 +11,7 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -21,6 +22,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+
 import org.apache.naming.NamingContext;
 
 import clase.datos.Cuenta;
@@ -155,22 +158,28 @@ public class TransferenciasRecursos {
 	 */
 	@DELETE
 	@Path("{Transferencia_id}")
-	public Response deleteTransferenciasCuenta(@PathParam("Transferencia_id") String Transferencia_id) {
-		try {
-			int int_id = Integer.parseInt(Transferencia_id);
-			String sql = "DELETE FROM BANCO.Transacciones WHERE idTransacciones = " + int_id + " AND IDTripoTransf = "
-					+ tipoTransf + " ;";
-			PreparedStatement ps = conn.prepareStatement(sql);
-			int affectedRows = ps.executeUpdate();
-			if (affectedRows == 1)
-				return Response.status(Response.Status.NO_CONTENT).build();
-			else
-				return Response.status(Response.Status.NOT_FOUND).entity("Elemento no encontrado").build();
-		} catch (NumberFormatException e) {
-			return Response.status(Response.Status.BAD_REQUEST).entity("No puedo parsear a entero").build();
-		} catch (SQLException e) {
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-					.entity("No se pudo eliminar el cliente\n" + e.getStackTrace()).build();
+	public Response deleteTransferenciasCuenta(@QueryParam("administrador") @DefaultValue("no") String administrador,
+			@PathParam("Transferencia_id") String Transferencia_id) {
+		if (administrador == "yes") {
+			try {
+				int int_id = Integer.parseInt(Transferencia_id);
+				String sql = "DELETE FROM BANCO.Transacciones WHERE idTransacciones = " + int_id
+						+ " AND IDTripoTransf = " + tipoTransf + " ;";
+				PreparedStatement ps = conn.prepareStatement(sql);
+				int affectedRows = ps.executeUpdate();
+				if (affectedRows == 1)
+					return Response.status(Response.Status.NO_CONTENT).build();
+				else
+					return Response.status(Response.Status.NOT_FOUND).entity("Elemento no encontrado").build();
+			} catch (NumberFormatException e) {
+				return Response.status(Response.Status.BAD_REQUEST).entity("No puedo parsear a entero").build();
+			} catch (SQLException e) {
+				return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+						.entity("No se pudo eliminar el cliente\n" + e.getStackTrace()).build();
+			}
+		} else {
+			return Response.status(Response.Status.UNAUTHORIZED).entity("No está autorizado a realizar esta acción")
+					.build();
 		}
 	}
 }
