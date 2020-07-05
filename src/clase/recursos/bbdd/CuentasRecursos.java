@@ -11,6 +11,7 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -21,6 +22,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+
 import org.apache.naming.NamingContext;
 
 import clase.datos.Cliente;
@@ -54,8 +57,8 @@ public class CuentasRecursos {
 	}
 
 	/**
-	 * getCuentas/0
-	 * Devuelve todas las cuentas
+	 * getCuentas/0 Devuelve todas las cuentas
+	 * 
 	 * @return XML de tipo ListaCuentas
 	 */
 	@GET
@@ -82,8 +85,8 @@ public class CuentasRecursos {
 	}
 
 	/**
-	 * getCuenta/1
-	 * Devuelve la cuenta con el id {Cuenta_id}
+	 * getCuenta/1 Devuelve la cuenta con el id {Cuenta_id}
+	 * 
 	 * @param id
 	 * @return XML de tipo Cuenta
 	 */
@@ -112,10 +115,10 @@ public class CuentasRecursos {
 
 	}
 
-	//NECESARIO
+	// NECESARIO
 	/**
-	 * addCuenta/1
-	 * Crea una cuenta nueva en la bbdd
+	 * addCuenta/1 Crea una cuenta nueva en la bbdd
+	 * 
 	 * @param cuenta
 	 * @return Response con la Url del recurso
 	 */
@@ -142,8 +145,9 @@ public class CuentasRecursos {
 	}
 
 	/**
-	 * updateCuenta/2
-	 * Actualiza una cuenta con el id {Cuenta_id}(arg1) de la bbdd con los atributos del objeto nueva_cuenta(arg2)
+	 * updateCuenta/2 Actualiza una cuenta con el id {Cuenta_id}(arg1) de la bbdd
+	 * con los atributos del objeto nueva_cuenta(arg2)
+	 * 
 	 * @param id
 	 * @param nueva_cuenta
 	 * @return Response
@@ -181,10 +185,10 @@ public class CuentasRecursos {
 		}
 	}
 
-	//NECESARIO
+	// NECESARIO
 	/**
-	 * deleteCuenta/1
-	 * Elimina una cuenta con el id {Cuenta_id}
+	 * deleteCuenta/1 Elimina una cuenta con el id {Cuenta_id}
+	 * 
 	 * @param id
 	 * @return Response
 	 */
@@ -214,30 +218,45 @@ public class CuentasRecursos {
 			return Response.status(Response.Status.BAD_REQUEST).entity("No puedo parsear a entero").build();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-					.entity("No se pudo eliminar el cliente\n").build();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("No se pudo eliminar el cliente\n")
+					.build();
 		}
 	}
 
 	/**
-	 * getRetiradasCuenta/1
-	 * Devuelve todas las retiradas de la cuenta con id {Cuenta_id}
+	 * getRetiradasCuenta/1 Devuelve todas las retiradas de la cuenta con id
+	 * {Cuenta_id}
+	 * 
 	 * @param id
 	 * @return XML de tipo ListaRetiradas
 	 */
 	@GET
 	@Path("{Cuenta_id}/Retiradas")
 	@Produces(MediaType.APPLICATION_XML)
-	public Response getRetiradasCuenta(@PathParam("Cuenta_id") String id) {
+	public Response getRetiradasCuenta(@QueryParam("intervalo") @DefaultValue("0") String intervalo,
+			@PathParam("Cuenta_id") String id) {
 		try {
 			int int_id = Integer.parseInt(id);
-			//int tipoTransf = 2; // 2->Retirada
-			String sql = "SELECT * FROM BANCO.Transacciones WHERE IDCuenta =" + int_id + " AND IDTipoTransf = 2;";
+			String sql;
+			if (intervalo.equals("0")) {
+				// int tipoTransf = 2; // 2->Retirada
+				sql = "SELECT * FROM BANCO.Transacciones WHERE IDCuenta =" + int_id + " AND IDTipoTransf = 2;";
+			} else {
+				String intervalos[] = intervalo.split("-");
+				String intervalo0 = intervalos[0];
+				String intervalo1 = intervalos[1];
+				int inter0 = Integer.parseInt(intervalo0);
+				int inter1 = Integer.parseInt(intervalo1);
+				int diferencia = inter1 - inter0;
+				inter0--;
+				sql = "SELECT * FROM BANCO.Transacciones WHERE IDCuenta =" + int_id + " AND IDTipoTransf = 2 LIMIT "
+						+ inter0 + " ," + diferencia + ";";
+			}
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			ListaMovimientos lista = new ListaMovimientos();
 			rs.beforeFirst();
-			if(!rs.next()) 
+			if (!rs.next())
 				return Response.status(Response.Status.NOT_FOUND).entity("No se encontraron retiradas").build();
 			while (rs.next()) {
 				Movimientos movimiento = new Movimientos();
@@ -254,27 +273,42 @@ public class CuentasRecursos {
 		}
 	}
 
-	//NECESARIO
-	//Revisar!!!!
+	// NECESARIO
+	// Revisar!!!!
 	/**
-	 * getTransferenciasCuenta/1
-	 * Devuelve todas las transferencias de la cuenta con id {Cuenta_id}
+	 * getTransferenciasCuenta/1 Devuelve todas las transferencias de la cuenta con
+	 * id {Cuenta_id}
+	 * 
 	 * @param id
 	 * @return XML de tipo ListaTransferencias
 	 */
 	@GET
 	@Path("{Cuenta_id}/Transferencias")
 	@Produces(MediaType.APPLICATION_XML)
-	public Response getTransferenciasCuenta(@PathParam("Cuenta_id") String id) {
+	public Response getTransferenciasCuenta(@QueryParam("intervalo") @DefaultValue("0") String intervalo,
+			@PathParam("Cuenta_id") String id) {
 		try {
 			int int_id = Integer.parseInt(id);
-			//int tipoTransf = 1; // 1->Transferencia
-			String sql = "SELECT * FROM BANCO.Transacciones WHERE IDCuenta =" + int_id + " AND IDTipoTransf = 2;";
+			String sql;
+			if (intervalo.equals("0")) {
+				// int tipoTransf = 1; // 1->Transferencia
+				sql = "SELECT * FROM BANCO.Transacciones WHERE IDCuenta =" + int_id + " AND IDTipoTransf = 1;";
+			} else {
+				String intervalos[] = intervalo.split("-");
+				String intervalo0 = intervalos[0];
+				String intervalo1 = intervalos[1];
+				int inter0 = Integer.parseInt(intervalo0);
+				int inter1 = Integer.parseInt(intervalo1);
+				int diferencia = inter1 - inter0;
+				inter0--;
+				sql = "SELECT * FROM BANCO.Transacciones WHERE IDCuenta =" + int_id + " AND IDTipoTransf = 1 LIMIT "
+						+ inter0 + " ," + diferencia + ";";
+			}
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			ListaMovimientos lista = new ListaMovimientos();
 			rs.beforeFirst();
-			if(!rs.next()) 
+			if (!rs.next())
 				return Response.status(Response.Status.NOT_FOUND).entity("No se encontraron transferencias").build();
 			while (rs.next()) {
 				Movimientos movimientos = new Movimientos();

@@ -53,8 +53,7 @@ public class ClientesRecursos {
 		}
 	}
 
-
-	//NECESARIO
+	// NECESARIO
 	// agregar el saldo de los clientes
 	/**
 	 * getClientes/0 Devuelve la lista de clientes con su Url y su saldo
@@ -63,11 +62,27 @@ public class ClientesRecursos {
 	 */
 	@GET
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public Response getClientes() {
+	public Response getClientes(@QueryParam("intervalo") @DefaultValue("0") String intervalo) {
 		try {
-			String sql = "select (select Clientes.idClientes from Clientes where Clientes.idClientes=Cuentas.IDCliente)as idClientes,"
-					+ "(select Clientes.Nombre from Clientes where Clientes.idClientes=Cuentas.IDCliente)as Nombre,"
-					+ " sum(Cuentas.balance)from Cuentas group by Cuentas.IDCliente";
+			String sql;
+			if (intervalo.equals("0")) {
+				sql = "select (select Clientes.idClientes from Clientes where Clientes.idClientes=Cuentas.IDCliente)as idClientes,"
+						+ "(select Clientes.Nombre from Clientes where Clientes.idClientes=Cuentas.IDCliente)as Nombre,"
+						+ " sum(Cuentas.balance)from Cuentas group by Cuentas.IDCliente;";
+			} else {
+				String intervalos[] = intervalo.split("-");
+				String intervalo0 = intervalos[0];
+				String intervalo1 = intervalos[1];
+				int inter0 = Integer.parseInt(intervalo0);
+				int inter1 = Integer.parseInt(intervalo1);
+				int diferencia = inter1 - inter0;
+				inter0--;
+				sql = "select (select Clientes.idClientes from Clientes where Clientes.idClientes=Cuentas.IDCliente)as idClientes,"
+						+ "(select Clientes.Nombre from Clientes where Clientes.idClientes=Cuentas.IDCliente)as Nombre,"
+						+ " sum(Cuentas.balance)from Cuentas group by Cuentas.IDCliente LIMIT " + inter0 + " ,"
+						+ diferencia + ";";
+			}
+
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			ListaClientes lista = new ListaClientes();
@@ -262,10 +277,33 @@ public class ClientesRecursos {
 	@GET
 	@Path("{Cliente_id}/retiradas")
 	@Produces(MediaType.APPLICATION_XML)
-	public Response getRetiradasCliente(@PathParam("Cliente_id") int id) {
+	public Response getRetiradasCliente(@QueryParam("intervalo") @DefaultValue("0") String intervalo,
+			@QueryParam("intervaloDinero") @DefaultValue("0") String intervaloDinero, @PathParam("Cliente_id") int id) {
 		try {
-			String sql = "SELECT * FROM BANCO.Transacciones WHERE IDTipoTransf=2 and "
-					+ "(IDCuenta IN (SELECT idCuentas FROM BANCO.Cuentas WHERE IDCliente = "+id+"));";
+			String sql;
+			String limit = "";
+			String dinero = "";
+			if (!intervalo.equals("0")) {
+				String intervalos[] = intervalo.split("-");
+				String intervalo0 = intervalos[0];
+				String intervalo1 = intervalos[1];
+				int inter0 = Integer.parseInt(intervalo0);
+				int inter1 = Integer.parseInt(intervalo1);
+				int diferencia = inter1 - inter0;
+				inter0--;
+				limit = "LIMIT " + inter0 + " ," + diferencia;
+			}
+			if (!intervaloDinero.equals("0")) {
+				String intervalosD[] = intervaloDinero.split("-");
+				String intervaloD0 = intervalosD[0];
+				String intervaloD1 = intervalosD[1];
+				int interD0 = Integer.parseInt(intervaloD0);
+				int interD1 = Integer.parseInt(intervaloD1);
+				dinero = "and Importe > " + interD0 + " , Importe < " + interD1;
+			}
+			sql = "SELECT * FROM BANCO.Transacciones WHERE IDTipoTransf=2 and "
+					+ "(IDCuenta IN (SELECT idCuentas FROM BANCO.Cuentas WHERE IDCliente = " + id + "))" + dinero
+					+ limit + ";";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			ListaMovimientos lista = new ListaMovimientos();
@@ -286,8 +324,8 @@ public class ClientesRecursos {
 	}
 
 	/**
-	 * getRetiradasTransferenciasCliente/1 
-	 *Devuelve todas la retiradas y transferencias de el cliente con id {Cliente_id}
+	 * getRetiradasTransferenciasCliente/1 Devuelve todas la retiradas y
+	 * transferencias de el cliente con id {Cliente_id}
 	 * 
 	 * @param id
 	 * @return XML tipo ListaRetiradas y ListaTransferencias
@@ -295,21 +333,37 @@ public class ClientesRecursos {
 	@GET
 	@Path("{Cliente_id}/retiradasTransferencias")
 	@Produces(MediaType.APPLICATION_XML)
-	public Response getRetiradasTransferenciasCliente(@PathParam("Cliente_id") int id) {
+	public Response getRetiradasTransferenciasCliente(
+			@QueryParam("intervaloDinero") @DefaultValue("0") String intervaloDinero, @PathParam("Cliente_id") int id) {
 		try {
-			String sql = "SELECT * FROM BANCO.Transacciones WHERE IDCuenta IN (SELECT idCuentas FROM BANCO.Cuentas WHERE IDCliente = " + id + ");";
+			String sql;
+			if (intervaloDinero.equals("0")) {
+				sql = "SELECT * FROM BANCO.Transacciones WHERE IDCuenta IN (SELECT idCuentas FROM BANCO.Cuentas WHERE IDCliente = "
+						+ id + ");";
+			} else {
+				String intervalos[] = intervaloDinero.split("-");
+				String intervalo0 = intervalos[0];
+				String intervalo1 = intervalos[1];
+				int inter0 = Integer.parseInt(intervalo0);
+				int inter1 = Integer.parseInt(intervalo1);
+				// int diferencia = inter1 - inter0;
+				// inter0--;
+				sql = "SELECT * FROM BANCO.Transacciones WHERE IDCuenta IN (SELECT idCuentas FROM BANCO.Cuentas WHERE IDCliente = "
+						+ id + ") and Importe > " + inter0 + " and Importe < " + inter1 + ";";
+			}
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			ListaMovimientos lista = new ListaMovimientos();
 			rs.beforeFirst();
-			if(!rs.next()) 
-				return Response.status(Response.Status.NOT_FOUND).entity("No se encontraron retiradas ni transferencias").build();
+			if (!rs.next())
+				return Response.status(Response.Status.NOT_FOUND)
+						.entity("No se encontraron retiradas ni transferencias").build();
 			while (rs.next()) {
 				Movimientos movimiento = new Movimientos();
 				movimiento.retiradaFromRS(rs);
 				lista.addListaMovimientos(movimiento);
 			}
-			return Response.status(Response.Status.OK).entity(lista).build(); 
+			return Response.status(Response.Status.OK).entity(lista).build();
 		} catch (NumberFormatException e) {
 			return Response.status(Response.Status.BAD_REQUEST).entity("No se pudieron convertir los índices a números")
 					.build();

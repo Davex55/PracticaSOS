@@ -53,8 +53,8 @@ public class TransferenciasRecursos {
 	}
 
 	/**
-	 * getTransferencia/1
-	 * Devuelve la transferencia con el id {Transferencia_id}
+	 * getTransferencia/1 Devuelve la transferencia con el id {Transferencia_id}
+	 * 
 	 * @param id
 	 * @return XML de tipo Transferencia
 	 */
@@ -82,11 +82,11 @@ public class TransferenciasRecursos {
 		}
 	}
 
-	//NECESARIO
-	//Revisar!!!
+	// NECESARIO
+	// Revisar!!!
 	/**
-	 * addTransferencia/1
-	 * Crea una transferencia en la bbdd
+	 * addTransferencia/1 Crea una transferencia en la bbdd
+	 * 
 	 * @param transferencia
 	 * @return Response con la Url del recurso
 	 */
@@ -101,33 +101,33 @@ public class TransferenciasRecursos {
 			Cuenta cuentaDest = new Cuenta();
 			System.out.println("hasta aqui1");
 			String sql = "SELECT * FROM BANCO.Cuentas WHERE idCuentas = " + origen + ";";
-			System.out.println("hasta aqui2");
 			PreparedStatement ps = conn.prepareStatement(sql);
-			System.out.println("hasta aqui3");
 			ResultSet rs = ps.executeQuery();
-			System.out.println("hasta aqui");
 			if (rs.next()) {
 				cuentaOr.cuentaFromRS(rs);
 			} else {
 				return Response.status(Response.Status.NOT_FOUND).entity("Elemento no encontrado").build();
 			}
-			
+
 			if (cuentaOr.getSaldo() > importe) {
-				// Se calcula el saldo final 
+				// Se calcula el saldo final
 				double balanceOrFin = cuentaOr.getSaldo() - importe;
 				// Actualiza el Saldo de la cuesta origen
-				sql = "UPDATE BANCO.Cuentas SET Balance = " + balanceOrFin + "WHERE idCuentas = " + cuentaOr.getId() + ";";
+				sql = "UPDATE BANCO.Cuentas SET Balance = " + balanceOrFin + "WHERE idCuentas = " + cuentaOr.getId()
+						+ ";";
 				ps = conn.prepareStatement(sql);
 				ps.executeUpdate();
 				// Actualiza el saldo de la cuenta destino
-				sql = "UPDATE BANCO.Cuentas SET Balance = (balance + " + importe + ") WHERE idCuentas = " + cuentaDest.getId() + ";";
+				sql = "UPDATE BANCO.Cuentas SET Balance = (balance + " + importe + ") WHERE idCuentas = "
+						+ cuentaDest.getId() + ";";
 				ps = conn.prepareStatement(sql);
 				ps.executeUpdate();
 				// Se crea una nueva transferencia en el recurso /api/transferencia
 				sql = "INSERT INTO BANCO.Transacciones (Importe, IDCuenta, IDTipoTransf, IDCuentaDest) VALUES "
-						+ importe + ", " + origen + ", " + tipoTransf + ", " + destino + ";";				
+						+ importe + ", " + origen + ", " + tipoTransf + ", " + destino + ";";
 			} else {
-				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("No se puede realizar la transaccion").build();
+				return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+						.entity("No se puede realizar la transaccion").build();
 			}
 			ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			ps.executeUpdate();
@@ -144,11 +144,12 @@ public class TransferenciasRecursos {
 		}
 	}
 
-	//NECESARIO
-	//Revisar
+	// NECESARIO
+	// Revisar
 	/**
-	 * deleteTransferenciasCuenta/1
-	 * Elimina la transferencia con el id {Transferencia_id}
+	 * deleteTransferenciasCuenta/1 Elimina la transferencia con el id
+	 * {Transferencia_id}
+	 * 
 	 * @param Transferencia_id
 	 * @return Response
 	 */
