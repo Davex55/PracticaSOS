@@ -293,7 +293,7 @@ public class ClientesRecursos {
 				int inter1 = Integer.parseInt(intervalo1);
 				int diferencia = inter1 - inter0;
 				inter0--;
-				limit = "LIMIT " + inter0 + " ," + diferencia;
+				limit = "LIMIT " + inter0 + " ," + diferencia+ " ";
 			}
 			if (!intervaloDinero.equals("0")) {
 				String intervalosD[] = intervaloDinero.split("-");
@@ -301,10 +301,10 @@ public class ClientesRecursos {
 				String intervaloD1 = intervalosD[1];
 				int interD0 = Integer.parseInt(intervaloD0);
 				int interD1 = Integer.parseInt(intervaloD1);
-				dinero = "and Importe > " + interD0 + " , Importe < " + interD1;
+				dinero = "and Importe > " + interD0 + " , Importe < " + interD1+" ";
 			}
 			sql = "SELECT * FROM BANCO.Transacciones WHERE IDTipoTransf=2 and "
-					+ "(IDCuenta IN (SELECT idCuentas FROM BANCO.Cuentas WHERE IDCliente = " + id + "))" + dinero
+					+ "(IDCuenta IN (SELECT idCuentas FROM BANCO.Cuentas WHERE IDCliente = " + id + ")) " + dinero
 					+ limit + ";";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
