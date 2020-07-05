@@ -307,9 +307,7 @@ public class CuentasRecursos {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			ListaMovimientos lista = new ListaMovimientos();
-			rs.beforeFirst();
-			if (!rs.next())
-				return Response.status(Response.Status.NOT_FOUND).entity("No se encontraron transferencias").build();
+			rs.beforeFirst();			
 			while (rs.next()) {
 				Movimientos movimientos = new Movimientos();
 				movimientos.transferenciaFromRS(rs);

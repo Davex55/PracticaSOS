@@ -46,7 +46,7 @@ public class TransferenciasRecursos {
 			ctx = new InitialContext();
 			NamingContext envCtx = (NamingContext) ctx.lookup("java:comp/env");
 
-			ds = (DataSource) envCtx.lookup("jdbc/GarajesyEmpleados");
+			ds = (DataSource) envCtx.lookup("jdbc/BANCO");
 			conn = ds.getConnection();
 		} catch (NamingException e) {
 			e.printStackTrace();
@@ -143,6 +143,7 @@ public class TransferenciasRecursos {
 			}
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error de acceso a BBDD").build();
 		} catch (SQLException e) {
+			e.printStackTrace();
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error de acceso a BBDD").build();
 		}
 	}

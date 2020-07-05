@@ -343,10 +343,10 @@ public class ClientesRecursos {
 				sql = "SELECT * FROM BANCO.Transacciones WHERE IDCuenta IN (SELECT idCuentas FROM BANCO.Cuentas WHERE IDCliente = "
 						+ id + ");";
 			} else {
-				String intervalos[] = intervaloDinero.split("-");
+				String intervalos[] = intervaloDinero.split("_");
 				String intervalo0 = intervalos[0];
 				String intervalo1 = intervalos[1];
-				int inter0 = Integer.parseInt(intervalo0);
+				int inter0 = Integer.parseInt(intervalo0) - 1;
 				int inter1 = Integer.parseInt(intervalo1);
 				// int diferencia = inter1 - inter0;
 				// inter0--;
@@ -357,13 +357,10 @@ public class ClientesRecursos {
 			ResultSet rs = ps.executeQuery();
 			ListaMovimientos lista = new ListaMovimientos();
 			rs.beforeFirst();
-			if (!rs.next())
-				return Response.status(Response.Status.NOT_FOUND)
-						.entity("No se encontraron retiradas ni transferencias").build();
 			while (rs.next()) {
 				Movimientos movimiento = new Movimientos();
 				movimiento.retiradaFromRS(rs);
-				lista.addListaMovimientos(movimiento);
+				lista.addListaMovimientos(movimiento);				
 			}
 			return Response.status(Response.Status.OK).entity(lista).build();
 		} catch (NumberFormatException e) {

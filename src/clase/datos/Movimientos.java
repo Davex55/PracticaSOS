@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name = "transferencia")
+@XmlRootElement(name = "movimiento")
 public class Movimientos {
 	
 	private int idTransacciones;
